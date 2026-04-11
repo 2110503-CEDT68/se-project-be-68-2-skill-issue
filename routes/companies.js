@@ -2,8 +2,10 @@ const express = require('express');
 const {protect, authorize} = require('../middleware/auth');
 const {getCompanies, getCompany, createCompany, updateCompany, deleteCompany} = require('../controllers/companies');
 const bookingRouter = require('./bookings');
+const reviewRouter = require('./reviews');
 const router = express.Router();
 router.use('/:id/bookings/', bookingRouter);
+router.use('/:id/reviews/', reviewRouter);
 router.route('/').get(getCompanies).post(protect, authorize('admin'), createCompany);
 router.route('/:id').get(protect, getCompany).put(protect, authorize('admin'), updateCompany).delete(protect, authorize('admin'), deleteCompany);
 module.exports = router

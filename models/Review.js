@@ -7,9 +7,9 @@ const ReviewSchema = new mongoose.Schema({
     rating: {
       type: Number, required: [true, 'Please select a star rating between 1 and 5'], min: [1, 'Rating must be at least 1 star'], max: [5, 'Rating must be at most 5 stars'],
       // Enforce integer stars only
-      validate: { validator: (v) => Math.round(v * 2) === v * 2, message: 'Rating must be in 0.5 increments (e.g. 1, 1.5, 2, 2.5 ... 5)' }
+      validate: { validator: Number.isInteger, message: 'Rating must be an integer (1, 2, 3, 4, or 5)' }
     },
-    comment: { type: String, required: [true, 'Please add a comment'], trim: true, maxlength: [1000, 'Comment cannot exceed 1000 characters'] },
+    comment: { type: String, required: [true, 'Please add a comment'], trim: true, maxlength: [100, 'Comment cannot exceed 100 characters'] },
 
     // Relationships
     company: { type: mongoose.Schema.ObjectId, ref: 'Company', required: true, index: true },
