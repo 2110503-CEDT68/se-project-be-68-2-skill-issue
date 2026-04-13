@@ -12,20 +12,52 @@ const Company = require('../models/Company');
  * @route   GET /api/v1/reviews
  * @access  Public
  */
-exports.getReviews = async (req, res, next) => {
+exports.getReviews = async (req, res, next) => { 
+  let query;
+  const reqQuery = { ...req.query };
+  const removeFields = ['select', 'sort', 'page', 'limit'];
+  removeFields.forEach(param => delete reqQuery[param]);
+
+  let queryStr = JSON.stringify(reqQuery);
+  queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+
+  //pagination
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 25;
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  
+
   try {
-    let query;
+
+    const parsedQuery = JSON.parse(queryStr);
 
     if (req.params.id) {
-      query = Review.find({ company: req.params.id })
+      parsedQuery.company = req.params.id;
+      query = Review.find(parsedQuery)
         .populate({ path: 'user', select: 'name email' });
     } else {
-      query = Review.find()
+      query = Review.find(parsedQuery)
         .populate({ path: 'company', select: 'name' })
         .populate({ path: 'user', select: 'name email' });
     }
-
+    
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('-createdAt');
+    }
+    
+    const total = await Review.countDocuments(parsedQuery);
+    query = query.skip(startIndex).limit(limit);
     const reviews = await query;
+
+    
+    const pagination = {};
+    if (endIndex < total) pagination.next = { page: page + 1, limit };
+    if (startIndex > 0) pagination.prev = { page: page - 1, limit };
+
     res.status(200).json({ success: true, count: reviews.length, data: reviews });
   } catch (err) {
     console.log(err);
@@ -101,7 +133,12 @@ exports.updateReview = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Not authorized to update this review' });
     }
 
-    review = await Review.findByIdAndUpdate(req.params.id, req.body, {
+    // Whitelist updatable fields -- prevents user from overwriting company/user refs
+    const allowedUpdates = {};
+    if (req.body.rating  !== undefined) allowedUpdates.rating  = req.body.rating;
+    if (req.body.comment !== undefined) allowedUpdates.comment = req.body.comment;
+
+    review = await Review.findByIdAndUpdate(req.params.id, allowedUpdates, {
       new: true,
       runValidators: true
     });

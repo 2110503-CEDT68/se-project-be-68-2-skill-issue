@@ -5,6 +5,7 @@
 
 const Company = require('../models/Company.js');
 const Booking = require('../models/Booking.js');
+const Review  = require('../models/Review.js');
 
 /**
  * @desc    Get all companies with optional filter, sort, and pagination
@@ -127,6 +128,7 @@ exports.deleteCompany = async (req, res, next) => {
 
     // Cascade delete all bookings belonging to this company
     await Booking.deleteMany({ company: req.params.id });
+    await Review.deleteMany({ company: req.params.id });
     await company.deleteOne();
 
     res.status(200).json({ success: true, data: {} });

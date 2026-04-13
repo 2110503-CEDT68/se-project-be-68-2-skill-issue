@@ -4,10 +4,16 @@ const {getCompanies, getCompany, createCompany, updateCompany, deleteCompany} = 
 const bookingRouter = require('./bookings');
 const reviewRouter = require('./reviews');
 const router = express.Router();
+
 router.use('/:id/bookings/', bookingRouter);
 router.use('/:id/reviews/', reviewRouter);
-router.route('/').get(getCompanies).post(protect, authorize('admin'), createCompany);
-router.route('/:id').get(protect, getCompany).put(protect, authorize('admin'), updateCompany).delete(protect, authorize('admin'), deleteCompany);
+router.route('/')
+    .get(getCompanies)
+    .post(protect, authorize('admin'), createCompany);
+router.route('/:id')
+    .get(protect, getCompany)
+    .put(protect, authorize('admin'), updateCompany)
+    .delete(protect, authorize('admin'), deleteCompany);
 module.exports = router
 /**
 * @swagger
