@@ -7,7 +7,8 @@ const CompanySchema = new mongoose.Schema({
   description: { type: String, required: [true, 'Please add a description'] },
   telephone_number: { type: String, required: [true, 'Please add a telephone number'] },
   averageRating: { type: Number, default: 0, min: 0, max: 5 },
-  numReviews: { type: Number, default: 0 }
+  numReviews: { type: Number, default: 0 },
+  imgSrc : { type: String, default: "https://cdn.pixabay.com/photo/2017/11/10/04/47/image-2935360_960_720.png"}
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true }
