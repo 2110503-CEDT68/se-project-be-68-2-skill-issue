@@ -137,11 +137,17 @@ exports.updateReview = async (req, res, next) => {
     const allowedUpdates = {};
     if (req.body.rating  !== undefined) allowedUpdates.rating  = req.body.rating;
     if (req.body.comment !== undefined) allowedUpdates.comment = req.body.comment;
+    
 
-    review = await Review.findByIdAndUpdate(req.params.id, allowedUpdates, {
-      new: true,
-      runValidators: true
-    });
+    if(review.rating.toString() === allowedUpdates.rating.toString() && review.comment === allowedUpdates.comment){
+      return res.status(200).json({ success: true, data: review });
+    }
+
+    review.rating = parseInt(allowedUpdates.rating);
+    review.comment = allowedUpdates.comment;
+    review.edited = true;
+
+    review.save();
 
     // Recalculate average rating
     await Review.calcAverageRating(review.company);

@@ -15,7 +15,8 @@ const ReviewSchema = new mongoose.Schema({
     company: { type: mongoose.Schema.ObjectId, ref: 'Company', required: true, index: true },
     user: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
 
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    edited : {type : Boolean, default : false}
   }, {
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
