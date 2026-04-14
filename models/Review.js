@@ -17,7 +17,7 @@ const ReviewSchema = new mongoose.Schema({
 
     createdAt: { type: Date, default: Date.now },
     edited : {type : Boolean, default : false},
-    editedAt : {type: Date, default: Date.now}
+    editedAt : {type: Date}
   }, {
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
