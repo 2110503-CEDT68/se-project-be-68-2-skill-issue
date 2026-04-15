@@ -15,12 +15,11 @@ const CommentSchema = new mongoose.Schema({
     effectiveDate: { type: Date, default: Date.now }, 
 });
 
-CommentSchema.pre('save', function (next) {
+CommentSchema.pre('save', function () {
     this.effectiveDate = (this.edited && this.editedAt) ? this.editedAt : this.createdAt;
-    next();
 });
 
-CommentSchema.pre(['findOneAndUpdate', 'updateOne', 'updateMany'], function (next) {
+CommentSchema.pre(['findOneAndUpdate', 'updateOne', 'updateMany'], function () {
     const update = this.getUpdate();
     const isEdited  = update.$set?.edited  ?? update.edited;
     const editedAt  = update.$set?.editedAt ?? update.editedAt;
@@ -31,7 +30,6 @@ CommentSchema.pre(['findOneAndUpdate', 'updateOne', 'updateMany'], function (nex
     } else if (createdAt) {
         this.setUpdate({ ...update, $set: { ...update.$set, effectiveDate: createdAt } });
     }
-    next();
 });
 
 CommentSchema.index({ blog: 1, effectiveDate: -1 });

@@ -25,13 +25,12 @@ const ReviewSchema = new mongoose.Schema({
 });
 
 // Keep effectiveDate in sync before every save
-ReviewSchema.pre('save', function (next) {
+ReviewSchema.pre('save', function () {
     this.effectiveDate = (this.edited && this.editedAt) ? this.editedAt : this.createdAt;
-    next();
 });
 
 // Also sync on findOneAndUpdate / updateOne / updateMany
-ReviewSchema.pre(['findOneAndUpdate', 'updateOne', 'updateMany'], function (next) {
+ReviewSchema.pre(['findOneAndUpdate', 'updateOne', 'updateMany'], function () {
     const update = this.getUpdate();
 
     const isEdited  = update.$set?.edited  ?? update.edited;
@@ -39,15 +38,10 @@ ReviewSchema.pre(['findOneAndUpdate', 'updateOne', 'updateMany'], function (next
     const createdAt = update.$set?.createdAt;
 
     if (isEdited && editedAt) {
-        // Being marked as edited — use editedAt
         this.setUpdate({ ...update, $set: { ...update.$set, effectiveDate: editedAt } });
     } else if (createdAt) {
-        // createdAt is being changed (rare) — fall back to it
         this.setUpdate({ ...update, $set: { ...update.$set, effectiveDate: createdAt } });
     }
-    // Otherwise effectiveDate stays as-is (no change needed)
-
-    next();
 });
 
 // Indexes
@@ -83,12 +77,12 @@ ReviewSchema.statics.calcAverageRating = async function (companyId) {
 };
 
 // Recalculate after save
-ReviewSchema.post('save', function () {
-  this.constructor.calcAverageRating(this.company);
+ReviewSchema.post('save', async function (doc) {
+    await doc.constructor.calcAverageRating(doc.company);
 });
 
 // Recalculate after delete
-ReviewSchema.post('findOneAndDelete', function (doc) {
+ReviewSchema.post('findOneAndDelete', async function (doc) {
   if (doc) doc.constructor.calcAverageRating(doc.company);
 });
 

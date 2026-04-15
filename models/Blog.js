@@ -19,12 +19,11 @@ const BlogSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-BlogSchema.pre('save', function (next) {
+BlogSchema.pre('save', function () {
     this.effectiveDate = (this.edited && this.editedAt) ? this.editedAt : this.createdAt;
-    next();
 });
 
-BlogSchema.pre(['findOneAndUpdate', 'updateOne', 'updateMany'], function (next) {
+BlogSchema.pre(['findOneAndUpdate', 'updateOne', 'updateMany'], function () {
     const update = this.getUpdate();
     const isEdited  = update.$set?.edited  ?? update.edited;
     const editedAt  = update.$set?.editedAt ?? update.editedAt;
@@ -35,7 +34,6 @@ BlogSchema.pre(['findOneAndUpdate', 'updateOne', 'updateMany'], function (next) 
     } else if (createdAt) {
         this.setUpdate({ ...update, $set: { ...update.$set, effectiveDate: createdAt } });
     }
-    next();
 });
 
 BlogSchema.index({ effectiveDate: -1 });
