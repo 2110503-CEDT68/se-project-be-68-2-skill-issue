@@ -18,7 +18,6 @@ const ReviewSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
     edited : {type : Boolean, default : false},
     editedAt : {type: Date},
-
     effectiveDate: { type: Date, default: Date.now },
   }, {
     toJSON: { virtuals: true },
