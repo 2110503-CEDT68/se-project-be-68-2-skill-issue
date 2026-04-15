@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1776247458696" clover="3.2.0">
-  <project timestamp="1776247458696" name="All files">
-    <metrics statements="480" coveredstatements="443" conditionals="188" coveredconditionals="150" methods="45" coveredmethods="39" elements="713" coveredelements="632" complexity="0" loc="480" ncloc="480" packages="6" files="21" classes="21"/>
+<coverage generated="1776249423922" clover="3.2.0">
+  <project timestamp="1776249423922" name="All files">
+    <metrics statements="474" coveredstatements="435" conditionals="188" coveredconditionals="146" methods="45" coveredmethods="36" elements="707" coveredelements="617" complexity="0" loc="474" ncloc="474" packages="6" files="21" classes="21"/>
     <package name="se-project-be-68-2-skill-issue">
       <metrics statements="47" coveredstatements="47" conditionals="6" coveredconditionals="6" methods="3" coveredmethods="3"/>
-      <file name="server.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\server.js">
+      <file name="server.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\server.js">
         <metrics statements="47" coveredstatements="47" conditionals="6" coveredconditionals="6" methods="3" coveredmethods="3"/>
         <line num="1" count="3" type="stmt"/>
         <line num="2" count="3" type="stmt"/>
@@ -57,7 +57,7 @@
     </package>
     <package name="se-project-be-68-2-skill-issue.config">
       <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-      <file name="db.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\config\db.js">
+      <file name="db.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\config\db.js">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
@@ -69,7 +69,7 @@
     </package>
     <package name="se-project-be-68-2-skill-issue.controllers">
       <metrics statements="278" coveredstatements="256" conditionals="126" coveredconditionals="110" methods="26" coveredmethods="24"/>
-      <file name="auth.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\controllers\auth.js">
+      <file name="auth.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\controllers\auth.js">
         <metrics statements="33" coveredstatements="33" conditionals="10" coveredconditionals="10" methods="5" coveredmethods="5"/>
         <line num="6" count="4" type="stmt"/>
         <line num="13" count="4" type="stmt"/>
@@ -105,7 +105,7 @@
         <line num="93" count="1" type="stmt"/>
         <line num="97" count="1" type="stmt"/>
       </file>
-      <file name="blogs.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\controllers\blogs.js">
+      <file name="blogs.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\controllers\blogs.js">
         <metrics statements="12" coveredstatements="2" conditionals="8" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="2" count="3" type="stmt"/>
         <line num="4" count="3" type="stmt"/>
@@ -120,7 +120,7 @@
         <line num="28" count="0" type="stmt"/>
         <line num="29" count="0" type="stmt"/>
       </file>
-      <file name="bookings.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\controllers\bookings.js">
+      <file name="bookings.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\controllers\bookings.js">
         <metrics statements="74" coveredstatements="74" conditionals="44" coveredconditionals="44" methods="5" coveredmethods="5"/>
         <line num="6" count="4" type="stmt"/>
         <line num="7" count="4" type="stmt"/>
@@ -197,7 +197,7 @@
         <line num="194" count="1" type="stmt"/>
         <line num="195" count="1" type="stmt"/>
       </file>
-      <file name="comments.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\controllers\comments.js">
+      <file name="comments.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\controllers\comments.js">
         <metrics statements="14" coveredstatements="2" conditionals="8" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
@@ -214,7 +214,7 @@
         <line num="31" count="0" type="stmt"/>
         <line num="32" count="0" type="stmt"/>
       </file>
-      <file name="companies.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\controllers\companies.js">
+      <file name="companies.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\controllers\companies.js">
         <metrics statements="61" coveredstatements="61" conditionals="18" coveredconditionals="18" methods="7" coveredmethods="7"/>
         <line num="6" count="4" type="stmt"/>
         <line num="7" count="4" type="stmt"/>
@@ -278,7 +278,7 @@
         <line num="136" count="1" type="stmt"/>
         <line num="137" count="1" type="stmt"/>
       </file>
-      <file name="reviews.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\controllers\reviews.js">
+      <file name="reviews.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\controllers\reviews.js">
         <metrics statements="84" coveredstatements="84" conditionals="38" coveredconditionals="38" methods="7" coveredmethods="7"/>
         <line num="6" count="4" type="stmt"/>
         <line num="7" count="4" type="stmt"/>
@@ -368,7 +368,7 @@
     </package>
     <package name="se-project-be-68-2-skill-issue.middleware">
       <metrics statements="19" coveredstatements="19" conditionals="10" coveredconditionals="10" methods="3" coveredmethods="3"/>
-      <file name="auth.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\middleware\auth.js">
+      <file name="auth.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\middleware\auth.js">
         <metrics statements="19" coveredstatements="19" conditionals="10" coveredconditionals="10" methods="3" coveredmethods="3"/>
         <line num="6" count="4" type="stmt"/>
         <line num="7" count="4" type="stmt"/>
@@ -392,93 +392,87 @@
       </file>
     </package>
     <package name="se-project-be-68-2-skill-issue.models">
-      <metrics statements="82" coveredstatements="67" conditionals="46" coveredconditionals="24" methods="12" coveredmethods="8"/>
-      <file name="Blog.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\models\Blog.js">
-        <metrics statements="18" coveredstatements="16" conditionals="14" coveredconditionals="10" methods="2" coveredmethods="1"/>
+      <metrics statements="76" coveredstatements="59" conditionals="46" coveredconditionals="20" methods="12" coveredmethods="5"/>
+      <file name="Blog.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\models\Blog.js">
+        <metrics statements="16" coveredstatements="15" conditionals="14" coveredconditionals="10" methods="2" coveredmethods="1"/>
         <line num="1" count="4" type="stmt"/>
         <line num="3" count="4" type="stmt"/>
         <line num="22" count="4" type="stmt"/>
         <line num="23" count="0" type="cond" truecount="0" falsecount="4"/>
-        <line num="24" count="0" type="stmt"/>
-        <line num="27" count="4" type="stmt"/>
-        <line num="28" count="3" type="stmt"/>
+        <line num="26" count="4" type="stmt"/>
+        <line num="27" count="3" type="stmt"/>
+        <line num="28" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="29" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="30" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="31" count="3" type="stmt"/>
-        <line num="33" count="3" type="cond" truecount="4" falsecount="0"/>
-        <line num="34" count="1" type="stmt"/>
-        <line num="35" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="36" count="1" type="stmt"/>
-        <line num="38" count="3" type="stmt"/>
+        <line num="30" count="3" type="stmt"/>
+        <line num="32" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="34" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="35" count="1" type="stmt"/>
+        <line num="39" count="4" type="stmt"/>
         <line num="41" count="4" type="stmt"/>
-        <line num="43" count="4" type="stmt"/>
-        <line num="50" count="4" type="stmt"/>
+        <line num="48" count="4" type="stmt"/>
       </file>
-      <file name="Booking.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\models\Booking.js">
+      <file name="Booking.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\models\Booking.js">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="6" type="stmt"/>
         <line num="3" count="6" type="stmt"/>
         <line num="24" count="6" type="stmt"/>
       </file>
-      <file name="Comment.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\models\Comment.js">
-        <metrics statements="17" coveredstatements="15" conditionals="14" coveredconditionals="10" methods="2" coveredmethods="1"/>
+      <file name="Comment.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\models\Comment.js">
+        <metrics statements="15" coveredstatements="14" conditionals="14" coveredconditionals="10" methods="2" coveredmethods="1"/>
         <line num="1" count="4" type="stmt"/>
         <line num="3" count="4" type="stmt"/>
         <line num="18" count="4" type="stmt"/>
         <line num="19" count="0" type="cond" truecount="0" falsecount="4"/>
-        <line num="20" count="0" type="stmt"/>
+        <line num="22" count="4" type="stmt"/>
         <line num="23" count="4" type="stmt"/>
-        <line num="24" count="4" type="stmt"/>
+        <line num="24" count="4" type="cond" truecount="2" falsecount="0"/>
         <line num="25" count="4" type="cond" truecount="2" falsecount="0"/>
-        <line num="26" count="4" type="cond" truecount="2" falsecount="0"/>
-        <line num="27" count="4" type="stmt"/>
-        <line num="29" count="4" type="cond" truecount="4" falsecount="0"/>
-        <line num="30" count="2" type="stmt"/>
-        <line num="31" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="32" count="1" type="stmt"/>
-        <line num="34" count="4" type="stmt"/>
+        <line num="26" count="4" type="stmt"/>
+        <line num="28" count="4" type="cond" truecount="4" falsecount="0"/>
+        <line num="29" count="2" type="stmt"/>
+        <line num="30" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="31" count="1" type="stmt"/>
+        <line num="35" count="4" type="stmt"/>
         <line num="37" count="4" type="stmt"/>
-        <line num="39" count="4" type="stmt"/>
       </file>
-      <file name="Company.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\models\Company.js">
+      <file name="Company.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\models\Company.js">
         <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="1" count="8" type="stmt"/>
-        <line num="3" count="8" type="stmt"/>
-        <line num="18" count="8" type="stmt"/>
-        <line num="27" count="8" type="stmt"/>
-        <line num="34" count="8" type="stmt"/>
+        <line num="1" count="7" type="stmt"/>
+        <line num="3" count="7" type="stmt"/>
+        <line num="18" count="7" type="stmt"/>
+        <line num="27" count="7" type="stmt"/>
+        <line num="34" count="7" type="stmt"/>
       </file>
-      <file name="Review.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\models\Review.js">
-        <metrics statements="27" coveredstatements="16" conditionals="18" coveredconditionals="4" methods="5" coveredmethods="3"/>
-        <line num="1" count="6" type="stmt"/>
-        <line num="6" count="6" type="stmt"/>
-        <line num="28" count="6" type="stmt"/>
+      <file name="Review.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\models\Review.js">
+        <metrics statements="25" coveredstatements="10" conditionals="18" coveredconditionals="0" methods="5" coveredmethods="0"/>
+        <line num="1" count="5" type="stmt"/>
+        <line num="6" count="5" type="stmt"/>
+        <line num="28" count="5" type="stmt"/>
         <line num="29" count="0" type="cond" truecount="0" falsecount="4"/>
-        <line num="30" count="0" type="stmt"/>
-        <line num="34" count="6" type="stmt"/>
-        <line num="35" count="0" type="stmt"/>
+        <line num="33" count="5" type="stmt"/>
+        <line num="34" count="0" type="stmt"/>
+        <line num="36" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="37" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="38" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="39" count="0" type="stmt"/>
-        <line num="41" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="40" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="42" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="43" count="0" type="stmt"/>
-        <line num="44" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="46" count="0" type="stmt"/>
-        <line num="50" count="0" type="stmt"/>
-        <line num="55" count="6" type="stmt"/>
-        <line num="57" count="6" type="stmt"/>
-        <line num="60" count="6" type="stmt"/>
-        <line num="61" count="2" type="stmt"/>
-        <line num="72" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="73" count="1" type="stmt"/>
-        <line num="78" count="1" type="stmt"/>
-        <line num="86" count="6" type="stmt"/>
-        <line num="87" count="1" type="stmt"/>
-        <line num="91" count="6" type="stmt"/>
-        <line num="92" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="95" count="6" type="stmt"/>
+        <line num="49" count="5" type="stmt"/>
+        <line num="51" count="5" type="stmt"/>
+        <line num="54" count="5" type="stmt"/>
+        <line num="55" count="0" type="stmt"/>
+        <line num="66" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="67" count="0" type="stmt"/>
+        <line num="72" count="0" type="stmt"/>
+        <line num="80" count="5" type="stmt"/>
+        <line num="81" count="0" type="stmt"/>
+        <line num="85" count="5" type="stmt"/>
+        <line num="86" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="89" count="5" type="stmt"/>
       </file>
-      <file name="User.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\models\User.js">
+      <file name="User.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\models\User.js">
         <metrics statements="12" coveredstatements="12" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
         <line num="1" count="5" type="stmt"/>
         <line num="2" count="5" type="stmt"/>
@@ -496,7 +490,7 @@
     </package>
     <package name="se-project-be-68-2-skill-issue.routes">
       <metrics statements="48" coveredstatements="48" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="auth.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\routes\auth.js">
+      <file name="auth.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\routes\auth.js">
         <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -508,7 +502,7 @@
         <line num="8" count="4" type="stmt"/>
         <line num="9" count="4" type="stmt"/>
       </file>
-      <file name="blogs.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\routes\blogs.js">
+      <file name="blogs.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\routes\blogs.js">
         <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="3" type="stmt"/>
         <line num="2" count="3" type="stmt"/>
@@ -519,7 +513,7 @@
         <line num="8" count="3" type="stmt"/>
         <line num="10" count="3" type="stmt"/>
       </file>
-      <file name="bookings.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\routes\bookings.js">
+      <file name="bookings.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\routes\bookings.js">
         <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="5" type="stmt"/>
         <line num="2" count="5" type="stmt"/>
@@ -529,7 +523,7 @@
         <line num="9" count="5" type="stmt"/>
         <line num="14" count="5" type="stmt"/>
       </file>
-      <file name="comments.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\routes\comments.js">
+      <file name="comments.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\routes\comments.js">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="3" type="stmt"/>
         <line num="2" count="3" type="stmt"/>
@@ -538,7 +532,7 @@
         <line num="6" count="3" type="stmt"/>
         <line num="8" count="3" type="stmt"/>
       </file>
-      <file name="companies.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\routes\companies.js">
+      <file name="companies.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\routes\companies.js">
         <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -552,7 +546,7 @@
         <line num="13" count="4" type="stmt"/>
         <line num="17" count="4" type="stmt"/>
       </file>
-      <file name="reviews.js" path="C:\SE_Project\se-project-be-68-2-skill-issue\routes\reviews.js">
+      <file name="reviews.js" path="C:\CU_1\Software_Engineering\Project\se-project-be-68-2-skill-issue\routes\reviews.js">
         <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="5" type="stmt"/>
         <line num="2" count="5" type="stmt"/>

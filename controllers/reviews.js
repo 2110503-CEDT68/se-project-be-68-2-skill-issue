@@ -148,7 +148,7 @@ exports.updateReview = async (req, res, next) => {
     review.edited = true;
     review.editedAt = Date.now();
 
-    review.save();
+    await review.save();
 
     // Recalculate average rating
     await Review.calcAverageRating(review.company);
