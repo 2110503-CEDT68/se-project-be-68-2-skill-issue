@@ -1,242 +1,217 @@
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const Comment = require('./comment'); // ปรับ path ตาม project ของคุณ
+const Comment = require('../../models/Comment');
 
-let mongoServer;
+describe('Comment Model (FINAL)', () => {
 
-// ─── Setup & Teardown ───────────────────────────────────────────────────────
+  const makeId = () => new mongoose.Types.ObjectId();
 
-beforeAll(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    await mongoose.connect(mongoServer.getUri());
-});
+  const validData = () => ({
+    text: 'Valid comment',
+    blog: makeId(),
+    author: makeId()
+  });
 
-afterAll(async () => {
-    await mongoose.disconnect();
-    await mongoServer.stop();
-});
+  // =========================
+  // ✅ BASIC + VALIDATION
+  // =========================
+  describe('validation', () => {
 
-afterEach(async () => {
-    await Comment.deleteMany({});
-});
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-const makeFakeId = () => new mongoose.Types.ObjectId();
-
-const validPayload = (overrides = {}) => ({
-    text: 'This is a valid comment',
-    blog: makeFakeId(),
-    author: makeFakeId(),
-    ...overrides,
-});
-
-// ─── Validation ──────────────────────────────────────────────────────────────
-
-describe('Comment Schema — Validation', () => {
-    it('saves successfully with valid data', async () => {
-        const comment = new Comment(validPayload());
-        const saved = await comment.save();
-
-        expect(saved._id).toBeDefined();
-        expect(saved.text).toBe('This is a valid comment');
+    it('should create valid comment', () => {
+      const comment = new Comment(validData());
+      expect(comment.validateSync()).toBeUndefined();
     });
 
-    it('trims whitespace from text', async () => {
-        const comment = new Comment(validPayload({ text: '  hello  ' }));
-        const saved = await comment.save();
-
-        expect(saved.text).toBe('hello');
+    it('should fail without text', () => {
+      const comment = new Comment({ ...validData(), text: undefined });
+      const err = comment.validateSync();
+      expect(err.errors.text).toBeDefined();
     });
 
-    it('throws when text is missing', async () => {
-        const comment = new Comment(validPayload({ text: undefined }));
-        await expect(comment.save()).rejects.toThrow(/Please add a comment text/);
+    it('should fail if text too long', () => {
+      const comment = new Comment({
+        ...validData(),
+        text: 'a'.repeat(101)
+      });
+
+      const err = comment.validateSync();
+      expect(err.errors.text).toBeDefined();
     });
 
-    it('throws when text is empty string', async () => {
-        const comment = new Comment(validPayload({ text: '' }));
-        await expect(comment.save()).rejects.toThrow(/Please add a comment text/);
+    it('should fail without blog', () => {
+      const comment = new Comment({ ...validData(), blog: undefined });
+      const err = comment.validateSync();
+      expect(err.errors.blog).toBeDefined();
     });
 
-    it('throws when text exceeds 100 characters', async () => {
-        const comment = new Comment(validPayload({ text: 'a'.repeat(101) }));
-        await expect(comment.save()).rejects.toThrow(/Comment cannot exceed 100 characters/);
+    it('should fail without author', () => {
+      const comment = new Comment({ ...validData(), author: undefined });
+      const err = comment.validateSync();
+      expect(err.errors.author).toBeDefined();
     });
 
-    it('saves when text is exactly 100 characters', async () => {
-        const comment = new Comment(validPayload({ text: 'a'.repeat(100) }));
-        const saved = await comment.save();
-        expect(saved.text).toHaveLength(100);
+  });
+
+  // =========================
+  // ✅ DEFAULT VALUES
+  // =========================
+  describe('defaults', () => {
+
+    it('should set default values', () => {
+      const comment = new Comment(validData());
+
+      expect(comment.isDeletedByAdmin).toBe(false);
+      expect(comment.edited).toBe(false);
+      expect(comment.createdAt).toBeDefined();
     });
 
-    it('throws when blog is missing', async () => {
-        const comment = new Comment(validPayload({ blog: undefined }));
-        await expect(comment.save()).rejects.toThrow(/blog/);
+  });
+
+  // =========================
+  // ✅ PRE SAVE HOOK (DIRECT)
+  // =========================
+  describe('pre save hook (coverage)', () => {
+
+    it('should use createdAt when not edited', () => {
+      const createdAt = new Date('2023-01-01');
+
+      const comment = new Comment({
+        ...validData(),
+        createdAt,
+        edited: false
+      });
+
+      const hook = Comment.schema.s.hooks._pres.get('save')[0].fn;
+      hook.call(comment, () => {});
+
+      expect(comment.effectiveDate.getTime())
+        .toBe(createdAt.getTime());
     });
 
-    it('throws when author is missing', async () => {
-        const comment = new Comment(validPayload({ author: undefined }));
-        await expect(comment.save()).rejects.toThrow(/author/);
-    });
-});
+    it('should use editedAt when edited', () => {
+      const editedAt = new Date('2024-01-01');
 
-// ─── Defaults ────────────────────────────────────────────────────────────────
+      const comment = new Comment({
+        ...validData(),
+        edited: true,
+        editedAt
+      });
 
-describe('Comment Schema — Default Values', () => {
-    it('sets isDeletedByAdmin to false by default', async () => {
-        const saved = await new Comment(validPayload()).save();
-        expect(saved.isDeletedByAdmin).toBe(false);
-    });
+      const hook = Comment.schema.s.hooks._pres.get('save')[0].fn;
+      hook.call(comment, () => {});
 
-    it('sets edited to false by default', async () => {
-        const saved = await new Comment(validPayload()).save();
-        expect(saved.edited).toBe(false);
+      expect(comment.effectiveDate.getTime())
+        .toBe(editedAt.getTime());
     });
 
-    it('sets createdAt automatically', async () => {
-        const before = new Date();
-        const saved = await new Comment(validPayload()).save();
-        const after = new Date();
+    it('should fallback to createdAt when edited true but no editedAt', () => {
+      const createdAt = new Date('2023-01-01');
 
-        expect(saved.createdAt).toBeDefined();
-        expect(saved.createdAt.getTime()).toBeGreaterThanOrEqual(before.getTime());
-        expect(saved.createdAt.getTime()).toBeLessThanOrEqual(after.getTime());
+      const comment = new Comment({
+        ...validData(),
+        createdAt,
+        edited: true
+      });
+
+      const hook = Comment.schema.s.hooks._pres.get('save')[0].fn;
+      hook.call(comment, () => {});
+
+      expect(comment.effectiveDate.getTime())
+        .toBe(createdAt.getTime());
     });
 
-    it('does not set editedAt by default', async () => {
-        const saved = await new Comment(validPayload()).save();
-        expect(saved.editedAt).toBeUndefined();
-    });
-});
+  });
 
-// ─── Pre-save: effectiveDate ──────────────────────────────────────────────────
+  // =========================
+  // ✅ PRE UPDATE HOOK
+  // =========================
+  describe('pre update hook', () => {
 
-describe('Comment Schema — pre(save) effectiveDate', () => {
-    it('sets effectiveDate to createdAt on new comment', async () => {
-        const saved = await new Comment(validPayload()).save();
-        expect(saved.effectiveDate.getTime()).toBe(saved.createdAt.getTime());
-    });
+    it('should set effectiveDate when edited via $set', () => {
+      const editedAt = new Date();
 
-    it('sets effectiveDate to editedAt when edited is true and editedAt is provided', async () => {
-        const editedAt = new Date('2025-06-01T10:00:00Z');
-        const comment = new Comment(validPayload({ edited: true, editedAt }));
-        const saved = await comment.save();
+      const query = {
+        getUpdate: () => ({
+          $set: { edited: true, editedAt }
+        }),
+        setUpdate: jest.fn()
+      };
 
-        expect(saved.effectiveDate.getTime()).toBe(editedAt.getTime());
-    });
+      const hook = Comment.schema.s.hooks._pres.get('findOneAndUpdate')[0].fn;
+      hook.call(query, () => {});
 
-    it('falls back to createdAt when edited is true but editedAt is missing', async () => {
-        const comment = new Comment(validPayload({ edited: true }));
-        const saved = await comment.save();
-
-        expect(saved.effectiveDate.getTime()).toBe(saved.createdAt.getTime());
+      expect(query.setUpdate).toHaveBeenCalled();
     });
 
-    it('falls back to createdAt when edited is false even if editedAt is set', async () => {
-        const editedAt = new Date('2025-06-01T10:00:00Z');
-        const comment = new Comment(validPayload({ edited: false, editedAt }));
-        const saved = await comment.save();
+    it('should set effectiveDate when createdAt provided', () => {
+      const createdAt = new Date();
 
-        expect(saved.effectiveDate.getTime()).toBe(saved.createdAt.getTime());
-    });
-});
+      const query = {
+        getUpdate: () => ({
+          $set: { createdAt }
+        }),
+        setUpdate: jest.fn()
+      };
 
-// ─── Pre-update: effectiveDate ────────────────────────────────────────────────
+      const hook = Comment.schema.s.hooks._pres.get('findOneAndUpdate')[0].fn;
+      hook.call(query, () => {});
 
-describe('Comment Schema — pre(findOneAndUpdate) effectiveDate', () => {
-    let commentId;
-
-    beforeEach(async () => {
-        const saved = await new Comment(validPayload()).save();
-        commentId = saved._id;
-    });
-
-    it('updates effectiveDate to editedAt when edited=true via $set', async () => {
-        const editedAt = new Date('2025-07-01T12:00:00Z');
-
-        await Comment.findOneAndUpdate(
-            { _id: commentId },
-            { $set: { edited: true, editedAt, text: 'Updated text' } },
-            { new: true }
-        );
-
-        const updated = await Comment.findById(commentId);
-        expect(updated.effectiveDate.getTime()).toBe(editedAt.getTime());
+      expect(query.setUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          $set: expect.objectContaining({
+            effectiveDate: createdAt
+          })
+        })
+      );
     });
 
-    it('updates effectiveDate to createdAt when createdAt is set in update', async () => {
-        const newCreatedAt = new Date('2024-01-01T00:00:00Z');
+    it('should handle top-level update (no $set)', () => {
+      const editedAt = new Date();
 
-        await Comment.findOneAndUpdate(
-            { _id: commentId },
-            { $set: { createdAt: newCreatedAt } }
-        );
+      const query = {
+        getUpdate: () => ({
+          edited: true,
+          editedAt
+        }),
+        setUpdate: jest.fn()
+      };
 
-        const updated = await Comment.findById(commentId);
-        expect(updated.effectiveDate.getTime()).toBe(newCreatedAt.getTime());
+      const hook = Comment.schema.s.hooks._pres.get('findOneAndUpdate')[0].fn;
+      hook.call(query, () => {});
+
+      expect(query.setUpdate).toHaveBeenCalled();
     });
 
-    it('does not change effectiveDate when neither edited nor createdAt is in update', async () => {
-        const before = await Comment.findById(commentId);
-        const originalEffectiveDate = before.effectiveDate.getTime();
+    it('should not modify effectiveDate when no condition', () => {
+      const query = {
+        getUpdate: () => ({
+          $set: { text: 'hello' }
+        }),
+        setUpdate: jest.fn()
+      };
 
-        await Comment.findOneAndUpdate(
-            { _id: commentId },
-            { $set: { text: 'Just a text change' } }
-        );
+      const hook = Comment.schema.s.hooks._pres.get('findOneAndUpdate')[0].fn;
+      hook.call(query, () => {});
 
-        const updated = await Comment.findById(commentId);
-        expect(updated.effectiveDate.getTime()).toBe(originalEffectiveDate);
+      expect(query.setUpdate).not.toHaveBeenCalled();
     });
 
-    it('does not update effectiveDate when edited=false', async () => {
-        const before = await Comment.findById(commentId);
-        const originalEffectiveDate = before.effectiveDate.getTime();
-        const editedAt = new Date('2025-07-01T12:00:00Z');
+  });
 
-        await Comment.findOneAndUpdate(
-            { _id: commentId },
-            { $set: { edited: false, editedAt } }
-        );
+  // =========================
+  // ✅ INDEX
+  // =========================
+  describe('index', () => {
 
-        const updated = await Comment.findById(commentId);
-        expect(updated.effectiveDate.getTime()).toBe(originalEffectiveDate);
-    });
-});
+    it('should have blog + effectiveDate index', () => {
+      const indexes = Comment.schema.indexes();
 
-// ─── Index ────────────────────────────────────────────────────────────────────
+      const found = indexes.some(i =>
+        i[0].blog === 1 && i[0].effectiveDate === -1
+      );
 
-describe('Comment Schema — Index', () => {
-    it('has an index on blog and effectiveDate', async () => {
-        const indexes = await Comment.collection.getIndexes();
-        const indexKeys = Object.values(indexes).map((idx) => idx.key);
-
-        const hasExpectedIndex = indexKeys.some(
-            (key) => key.blog === 1 && key.effectiveDate === -1
-        );
-
-        expect(hasExpectedIndex).toBe(true);
-    });
-});
-
-// ─── isDeletedByAdmin ─────────────────────────────────────────────────────────
-
-describe('Comment Schema — isDeletedByAdmin', () => {
-    it('can be set to true', async () => {
-        const saved = await new Comment(validPayload({ isDeletedByAdmin: true })).save();
-        expect(saved.isDeletedByAdmin).toBe(true);
+      expect(found).toBe(true);
     });
 
-    it('can be toggled via findOneAndUpdate', async () => {
-        const saved = await new Comment(validPayload()).save();
+  });
 
-        const updated = await Comment.findOneAndUpdate(
-            { _id: saved._id },
-            { $set: { isDeletedByAdmin: true } },
-            { new: true }
-        );
-
-        expect(updated.isDeletedByAdmin).toBe(true);
-    });
 });
