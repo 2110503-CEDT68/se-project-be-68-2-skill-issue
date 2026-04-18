@@ -1,7 +1,7 @@
 jest.mock('../../models/Comment');
 
 const Comment = require('../../models/Comment');
-const { addComment } = require('../../controllers/comments');
+const { getComments, addComment } = require('../../controllers/comments');
 
 describe('Comments Controller', () => {
   let req, res, next;
@@ -18,6 +18,32 @@ describe('Comments Controller', () => {
     };
     next = jest.fn();
     jest.clearAllMocks();
+  });
+
+  describe('getComments', () => {
+    it('should return all comments for a blog', async () => {
+      const mockComments = [{ _id: 'c1', text: 'Comment 1' }, { _id: 'c2', text: 'Comment 2' }];
+      const mockQuery = { populate: jest.fn().mockReturnThis(), sort: jest.fn().mockResolvedValue(mockComments) };
+      Comment.find.mockReturnValue(mockQuery);
+
+      await getComments(req, res, next);
+
+      expect(Comment.find).toHaveBeenCalledWith({ blog: 'blog123' });
+      expect(mockQuery.populate).toHaveBeenCalledWith('author', 'name');
+      expect(mockQuery.sort).toHaveBeenCalledWith('-effectiveDate');
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ success: true, count: 2, data: mockComments });
+    });
+
+    it('should return 500 on error', async () => {
+      const mockQuery = { populate: jest.fn().mockReturnThis(), sort: jest.fn().mockRejectedValue(new Error('DB error')) };
+      Comment.find.mockReturnValue(mockQuery);
+
+      await getComments(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ success: false, message: 'DB error' });
+    });
   });
 
   describe('addComment', () => {

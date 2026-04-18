@@ -1,1909 +1,4385 @@
 {
   "info": {
-    "_postman_id": "ccc8f5c4-ec22-4972-9cfc-e29f05637d13",
+    "_postman_id": "c5e05289-5b2a-4ece-8118-183b2ba76e8c",
     "name": "Project Demo",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "25077041"
+    "_exporter_id": "48211374",
+    "_collection_link": "https://go.postman.co/collection/48211374-c5e05289-5b2a-4ece-8118-183b2ba76e8c?source=collection_link"
   },
   "item": [
     {
-      "name": "Normal User Register",
-      "event": [
+      "name": "User Scenario",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 200\", function () {\r",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
-              "});\r",
-              "pm.execution.setNextRequest(\"Normal User Login\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              "pm.environment.set(\"TEST_EMAIL\", pm.variables.replaceIn('{{$randomEmail}}'));"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "description": "JSON Type",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"name\": \"{{$randomFullName}}\",\r\n    \"telephone_number\": \"0812345678\",\r\n    \"email\": \"{{TEST_EMAIL}}\",\r\n    \"password\": \"password123\",\r\n    \"role\": \"user\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          "name": "Normal User Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+                  "});\r",
+                  "pm.execution.setNextRequest(\"Normal User Login 1\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.environment.set(\"TEST_EMAIL\", pm.variables.replaceIn('{{$randomEmail}}'));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
             }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/auth/register",
-          "host": [
-            "{{URL}}"
           ],
-          "path": [
-            "api",
-            "v1",
-            "auth",
-            "register"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Normal User Login",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 200 (Login Success)\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "});\r",
-              "const response = pm.response.json();\r",
-              "pm.test(\"Token is generated\", function () {\r",
-              "    pm.expect(response).to.have.property('token');\r",
-              "});\r",
-              "// เก็บ Token และส่งไม้ต่อ\r",
-              "pm.environment.set(\"TOKEN\", response.token);\r",
-              "pm.execution.setNextRequest(\"View Companies\");"
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
             ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "description": "JSON Type",
-            "type": "text"
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{$randomFullName}}\",\r\n    \"telephone_number\": \"0812345678\",\r\n    \"email\": \"{{TEST_EMAIL}}\",\r\n    \"password\": \"password123\",\r\n    \"role\": \"user\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/register",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
           },
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "description": "JSON Type",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"email\": \"{{TEST_EMAIL}}\",\r\n    \"password\": \"password123\"\r\n}"
+          "response": []
         },
-        "url": {
-          "raw": "{{URL}}/api/v1/auth/login",
-          "host": [
-            "{{URL}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "auth",
-            "login"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "View Companies",
-      "event": [
         {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 200\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "});\r",
-              "const response = pm.response.json();\r",
-              "pm.test(\"There are some companies available\", () => {\r",
-              "    pm.expect(response.count).to.be.above(0);\r",
-              "});\r",
-              "// ดึง ID บริษัทแรกมาเก็บไว้จองคิว\r",
-              "pm.environment.set(\"COMPANY_ID\", response.data[0]._id);\r",
-              "pm.execution.setNextRequest(\"Create 1st Booking\");"
+          "name": "Normal User Login 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 (Login Success)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "const response = pm.response.json();\r",
+                  "pm.test(\"Token is generated\", function () {\r",
+                  "    pm.expect(response).to.have.property('token');\r",
+                  "});\r",
+                  "// เก็บ Token และส่งไม้ต่อ\r",
+                  "pm.environment.set(\"TOKEN\", response.token);\r",
+                  "pm.execution.setNextRequest(\"View Companies\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
             ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{TOKEN}}",
-              "type": "string"
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{TEST_EMAIL}}\",\r\n    \"password\": \"password123\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/login",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
             }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{URL}}/api/v1/companies",
-          "host": [
-            "{{URL}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "companies"
-          ]
-        },
-        "description": "fetch all hospitals from database"
-      },
-      "response": []
-    },
-    {
-      "name": "Create 1st Booking",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Booking 1 Created Successfully\", function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-              "});",
-              "const response = pm.response.json();",
-              "pm.environment.set(\"USER_BOOKING_ID\", response.data._id); // เก็บ ID ไว้ให้ User ลบ/แก้",
-              "pm.execution.setNextRequest(\"Create 2nd Booking\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"bookingDate\": \"2022-05-12\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/bookings/",
-          "host": [
-            "{{URL}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "companies",
-            ":companyId",
-            "bookings",
-            ""
-          ],
-          "variable": [
-            {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Create 2nd Booking",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Booking 2 Created Successfully\", function () {\r",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
-              "});\r",
-              "const response = pm.response.json();\r",
-              "pm.environment.set(\"ADMIN_TARGET_BOOKING_ID\", response.data._id);\r",
-              "pm.execution.setNextRequest(\"Create date out of range Booking\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"bookingDate\": \"2022-05-13\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/bookings/",
-          "host": [
-            "{{URL}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "companies",
-            ":companyId",
-            "bookings",
-            ""
-          ],
-          "variable": [
-            {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Create date out of range Booking",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Should block invalid date (Expect 400)\", function () {\r",
-              "    pm.response.to.have.status(400);\r",
-              "});\r",
-              "pm.execution.setNextRequest(\"Create 3rd Booking\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"bookingDate\": \"2023-05-12\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/bookings/",
-          "host": [
-            "{{URL}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "companies",
-            ":companyId",
-            "bookings",
-            ""
-          ],
-          "variable": [
-            {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Create 3rd Booking",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Booking 3 Created Successfully\", function () {\r",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
-              "});\r",
-              "const response = pm.response.json();\r",
-              "pm.environment.set(\"USER_BOOKING_ID\", response.data._id);\r",
-              "pm.execution.setNextRequest(\"Create 4th Booking (Over limit)\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"bookingDate\": \"2022-05-13\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/bookings/",
-          "host": [
-            "{{URL}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "companies",
-            ":companyId",
-            "bookings",
-            ""
-          ],
-          "variable": [
-            {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Create 4th Booking (Over limit)",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Should block over limit (Expect 400)\", function () {\r",
-              "    pm.response.to.have.status(400);\r",
-              "});\r",
-              "const response = pm.response.json();\r",
-              "pm.test(\"Error message matches quota limit\", function () {\r",
-              "    pm.expect(response.message).to.include(\"already made 3 bookings\");\r",
-              "});\r",
-              "pm.execution.setNextRequest(\"View Own Booking\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"bookingDate\": \"2022-05-13\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/bookings/",
-          "host": [
-            "{{URL}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "companies",
-            ":companyId",
-            "bookings",
-            ""
-          ],
-          "variable": [
-            {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "View Own Booking",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 200\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "});\r",
-              "pm.test(\"Count should be exactly 3\", function () {\r",
-              "    pm.expect(pm.response.json().count).to.eql(3);\r",
-              "});\r",
-              "pm.execution.setNextRequest(\"Update Own Booking\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{URL}}/api/v1/bookings/",
-          "host": [
-            "{{URL}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "bookings",
-            ""
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Update Own Booking",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Update Successful (200)\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "});\r",
-              "pm.execution.setNextRequest(\"Delete Own Booking\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "PUT",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "description": "JSON Type",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"bookingDate\":\"2022-05-12\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/bookings/:USER_BOOKING_ID",
-          "host": [
-            "{{URL}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "bookings",
-            ":USER_BOOKING_ID"
-          ],
-          "variable": [
-            {
-              "key": "USER_BOOKING_ID",
-              "value": "{{USER_BOOKING_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Delete Own Booking",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Delete Successful (200)\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "});\r",
-              "pm.execution.setNextRequest(\"Normal User Log Out\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "DELETE",
-        "header": [],
-        "url": {
-          "raw": "{{URL}}/api/v1/bookings/:USER_BOOKING_ID",
-          "host": [
-            "{{URL}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "bookings",
-            ":USER_BOOKING_ID"
-          ],
-          "variable": [
-            {
-              "key": "USER_BOOKING_ID",
-              "value": "{{USER_BOOKING_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Normal User Log Out",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Logout Successful (200)\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "});\r",
-              "pm.environment.unset(\"TOKEN\");\r",
-              "pm.execution.setNextRequest(\"Admin Login\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "description": "JSON Type",
-            "type": "text"
           },
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "description": "JSON Type",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": ""
+          "response": []
         },
-        "url": {
-          "raw": "{{URL}}/api/v1/auth/logout",
-          "host": [
-            "{{URL}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "auth",
-            "logout"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Admin Login",
-      "event": [
         {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Admin Login Successful\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "});\r",
-              "const response = pm.response.json();\r",
-              "pm.environment.set(\"ADMIN_TOKEN\", response.token);\r",
-              "pm.environment.set(\"TOKEN\", response.token);\r",
-              "pm.execution.setNextRequest(\"View All Bookings\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "description": "JSON Type",
-            "type": "text"
+          "name": "View Companies",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "const response = pm.response.json();\r",
+                  "pm.test(\"There are some companies available\", () => {\r",
+                  "    pm.expect(response.count).to.be.above(0);\r",
+                  "});\r",
+                  "// ดึง ID บริษัทแรกมาเก็บไว้จองคิว\r",
+                  "pm.environment.set(\"COMPANY_ID\", response.data[0]._id);\r",
+                  "pm.execution.setNextRequest(\"Create 1st Booking\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/companies",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies"
+              ]
+            },
+            "description": "fetch all hospitals from database"
           },
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "description": "JSON Type",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"email\":\"admin@gmail.com\",\r\n    \"password\":\"12345678\"\r\n}"
+          "response": []
         },
-        "url": {
-          "raw": "{{URL}}/api/v1/auth/login",
-          "host": [
-            "{{URL}}"
+        {
+          "name": "Create 1st Booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Booking 1 Created Successfully\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.environment.set(\"USER_BOOKING_ID\", response.data._id); // เก็บ ID ไว้ให้ User ลบ/แก้",
+                  "pm.execution.setNextRequest(\"Create 2nd Booking\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
           ],
-          "path": [
-            "api",
-            "v1",
-            "auth",
-            "login"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "View All Bookings",
-      "event": [
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"bookingDate\": \"2022-05-12\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/bookings/",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "bookings",
+                ""
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
         {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Admin can view bookings (200)\", function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "const response = pm.response.json();",
-              "pm.environment.set(\"ADMIN_BOOKING_ID\", response.data[0]._id);",
-              "pm.execution.setNextRequest(\"View any Booking\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
+          "name": "Create 2nd Booking",
+          "event": [
             {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Booking 2 Created Successfully\", function () {\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+                  "});\r",
+                  "const response = pm.response.json();\r",
+                  "pm.environment.set(\"ADMIN_TARGET_BOOKING_ID\", response.data._id);\r",
+                  "pm.execution.setNextRequest(\"Create date out of range Booking\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
             }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/bookings",
-          "host": [
-            "{{URL}}"
           ],
-          "path": [
-            "api",
-            "v1",
-            "bookings"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "View any Booking",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Admin can view specific user booking (200)\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "});\r",
-              "pm.execution.setNextRequest(\"Update any Booking\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"bookingDate\": \"2022-05-13\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/bookings/",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "bookings",
+                ""
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
             }
-          ]
+          },
+          "response": []
         },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{URL}}/api/v1/bookings/:ADMIN_BOOKING_ID",
-          "host": [
-            "{{URL}}"
+        {
+          "name": "Create date out of range Booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Should block invalid date (Expect 400)\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "pm.execution.setNextRequest(\"Create 3rd Booking\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
           ],
-          "path": [
-            "api",
-            "v1",
-            "bookings",
-            ":ADMIN_BOOKING_ID"
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"bookingDate\": \"2023-05-12\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/bookings/",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "bookings",
+                ""
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create 3rd Booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Booking 3 Created Successfully\", function () {\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+                  "});\r",
+                  "const response = pm.response.json();\r",
+                  "pm.environment.set(\"USER_BOOKING_ID\", response.data._id);\r",
+                  "pm.execution.setNextRequest(\"Create 4th Booking (Over limit)\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
           ],
-          "variable": [
-            {
-              "key": "ADMIN_BOOKING_ID",
-              "value": "{{ADMIN_TARGET_BOOKING_ID}}"
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"bookingDate\": \"2022-05-13\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/bookings/",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "bookings",
+                ""
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
             }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Update any Booking",
-      "event": [
+          },
+          "response": []
+        },
         {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Admin can update user booking (200)\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "});\r",
-              "pm.execution.setNextRequest(\"Delete any Booking\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
+          "name": "Create 4th Booking (Over limit)",
+          "event": [
             {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Should block over limit (Expect 400)\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "const response = pm.response.json();\r",
+                  "pm.test(\"Error message matches quota limit\", function () {\r",
+                  "    pm.expect(response.message).to.include(\"already made 3 bookings\");\r",
+                  "});\r",
+                  "pm.execution.setNextRequest(\"View Own Booking\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
             }
-          ]
-        },
-        "method": "PUT",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "description": "JSON Type",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"bookingDate\":\"2022-05-12\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/bookings/:ADMIN_BOOKING_ID",
-          "host": [
-            "{{URL}}"
           ],
-          "path": [
-            "api",
-            "v1",
-            "bookings",
-            ":ADMIN_BOOKING_ID"
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"bookingDate\": \"2022-05-13\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/bookings/",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "bookings",
+                ""
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "View Own Booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.test(\"Count should be exactly 3\", function () {\r",
+                  "    pm.expect(pm.response.json().count).to.eql(3);\r",
+                  "});\r",
+                  "pm.execution.setNextRequest(\"Update Own Booking\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
           ],
-          "variable": [
-            {
-              "key": "ADMIN_BOOKING_ID",
-              "value": "{{ADMIN_TARGET_BOOKING_ID}}"
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/bookings/",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                ""
+              ]
             }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Delete any Booking",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Admin can delete user booking (200)\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "});\r",
-              "pm.execution.setNextRequest(\"Review: Create Valid Review\");"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
-            }
-          ]
+          },
+          "response": []
         },
-        "method": "DELETE",
-        "header": [],
-        "url": {
-          "raw": "{{URL}}/api/v1/bookings/:ADMIN_BOOKING_ID",
-          "host": [
-            "{{URL}}"
+        {
+          "name": "Update Own Booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Update Successful (200)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.execution.setNextRequest(\"Delete Own Booking\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
           ],
-          "path": [
-            "api",
-            "v1",
-            "bookings",
-            ":ADMIN_BOOKING_ID"
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"bookingDate\":\"2022-05-12\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/bookings/:USER_BOOKING_ID",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                ":USER_BOOKING_ID"
+              ],
+              "variable": [
+                {
+                  "key": "USER_BOOKING_ID",
+                  "value": "{{USER_BOOKING_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Own Booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Delete Successful (200)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.execution.setNextRequest(\"Normal User Log Out\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
           ],
-          "variable": [
-            {
-              "key": "ADMIN_BOOKING_ID",
-              "value": "{{ADMIN_TARGET_BOOKING_ID}}"
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/bookings/:USER_BOOKING_ID",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                ":USER_BOOKING_ID"
+              ],
+              "variable": [
+                {
+                  "key": "USER_BOOKING_ID",
+                  "value": "{{USER_BOOKING_ID}}"
+                }
+              ]
             }
-          ]
+          },
+          "response": []
+        },
+        {
+          "name": "Normal User Log Out",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Logout Successful (200)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.environment.unset(\"TOKEN\");\r",
+                  "pm.execution.setNextRequest(\"Admin Login\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/logout",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "Review: Create Valid Review",
-      "event": [
+      "name": "Admin Scenario",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Review created successfully (201)', function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-              "});",
-              "const response = pm.response.json();",
-              "pm.test('Review has correct rating', function () {",
-              "    pm.expect(response.data.rating).to.eql(3);",
-              "});",
-              "pm.environment.set('REVIEW_ID', response.data._id);",
-              "pm.execution.setNextRequest('Review: Duplicate Review Same Company');"
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin Login Successful\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "const response = pm.response.json();\r",
+                  "pm.environment.set(\"ADMIN_TOKEN\", response.token);\r",
+                  "pm.environment.set(\"TOKEN\", response.token);\r",
+                  "pm.execution.setNextRequest(\"View All Bookings\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
             ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"admin@gmail.com\",\r\n    \"password\":\"12345678\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/login",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
             }
-          ]
+          },
+          "response": []
         },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"rating\": 3,\n    \"comment\": \"Great company to work with\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "companies", ":companyId", "reviews"],
-          "variable": [
+        {
+          "name": "View All Bookings",
+          "event": [
             {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin can view bookings (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.environment.set(\"ADMIN_BOOKING_ID\", response.data[0]._id);",
+                  "pm.execution.setNextRequest(\"View any Booking\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
             }
-          ]
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/bookings",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "View any Booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin can view specific user booking (200)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.execution.setNextRequest(\"Update any Booking\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/bookings/:ADMIN_BOOKING_ID",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                ":ADMIN_BOOKING_ID"
+              ],
+              "variable": [
+                {
+                  "key": "ADMIN_BOOKING_ID",
+                  "value": "{{ADMIN_TARGET_BOOKING_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update any Booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin can update user booking (200)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.execution.setNextRequest(\"Delete any Booking\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"bookingDate\":\"2022-05-12\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/bookings/:ADMIN_BOOKING_ID",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                ":ADMIN_BOOKING_ID"
+              ],
+              "variable": [
+                {
+                  "key": "ADMIN_BOOKING_ID",
+                  "value": "{{ADMIN_TARGET_BOOKING_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete any Booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin can delete user booking (200)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.execution.setNextRequest(\"Admin Logout\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/bookings/:ADMIN_BOOKING_ID",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                ":ADMIN_BOOKING_ID"
+              ],
+              "variable": [
+                {
+                  "key": "ADMIN_BOOKING_ID",
+                  "value": "{{ADMIN_TARGET_BOOKING_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin can delete user booking (200)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.execution.setNextRequest(\"Normal User Login 2\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/logout",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "Review: Duplicate Review Same Company",
-      "event": [
+      "name": "User Review",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Duplicate review blocked (400)', function () {",
-              "    pm.response.to.have.status(400);",
-              "});",
-              "pm.test('Error message about duplicate', function () {",
-              "    const response = pm.response.json();",
-              "    pm.expect(response.message).to.include('already reviewed');",
-              "});",
-              "pm.execution.setNextRequest('Review: Get Company Reviews');"
+          "name": "Normal User Login 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 (Login Success)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "const response = pm.response.json();\r",
+                  "pm.test(\"Token is generated\", function () {\r",
+                  "    pm.expect(response).to.have.property('token');\r",
+                  "});\r",
+                  "// เก็บ Token และส่งไม้ต่อ\r",
+                  "pm.environment.set(\"TOKEN\", response.token);\r",
+                  "pm.execution.setNextRequest(\"Review: Create Valid Review\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
             ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{TEST_EMAIL}}\",\r\n    \"password\": \"password123\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/login",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
             }
-          ]
+          },
+          "response": []
         },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"rating\": 4,\n    \"comment\": \"Trying to review again\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "companies", ":companyId", "reviews"],
-          "variable": [
+        {
+          "name": "Review: Create Valid Review",
+          "event": [
             {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Review created successfully (201)', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.test('Review has correct rating', function () {",
+                  "    pm.expect(response.data.rating).to.eql(3);",
+                  "});",
+                  "pm.environment.set('REVIEW_ID', response.data._id);",
+                  "pm.execution.setNextRequest('Review: Duplicate Review Same Company');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
             }
-          ]
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 3,\n    \"comment\": \"Great company to work with\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Duplicate Review Same Company",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Duplicate review blocked (400)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Error message about duplicate', function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.message).to.include('already reviewed');",
+                  "});",
+                  "pm.execution.setNextRequest('Review: Get Company Reviews');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 4,\n    \"comment\": \"Trying to review again\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Get Company Reviews",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('At least 1 review exists', function () {",
+                  "    pm.expect(pm.response.json().count).to.be.above(0);",
+                  "});",
+                  "pm.execution.setNextRequest('Review: Get Single Review');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Get Single Review",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Review data returned', function () {",
+                  "    pm.expect(pm.response.json().data).to.have.property('rating');",
+                  "    pm.expect(pm.response.json().data).to.have.property('comment');",
+                  "});",
+                  "pm.execution.setNextRequest('Review: Update Review');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Update Review",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Review updated (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Rating updated to 5', function () {",
+                  "    pm.expect(pm.response.json().data.rating).to.eql(5);",
+                  "});",
+                  "pm.execution.setNextRequest('Review: Delete Review');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 5,\n    \"comment\": \"Updated review\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Delete Review",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Review deleted (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.execution.setNextRequest('Review: Rating Below Min (0)');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Rating Below Min (0)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Rating 0 rejected (400)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.execution.setNextRequest('Review: Rating Above Max (6)');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 0,\n    \"comment\": \"Bad rating test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Rating Above Max (6)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Rating 6 rejected (400)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.execution.setNextRequest('Review: Decimal Rating (3.5)');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 6,\n    \"comment\": \"Too high rating\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Decimal Rating (3.5)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Decimal rating rejected (400)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.execution.setNextRequest('Review: Missing Comment');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 3.5,\n    \"comment\": \"Decimal rating test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Missing Comment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Missing comment rejected (400)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.execution.setNextRequest('Review: Comment Over 100 Chars');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 4\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Comment Over 100 Chars",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Comment over 100 chars rejected (400)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.execution.setNextRequest('Review: Missing Rating');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 4,\n    \"comment\": \"This is a very long comment that exceeds the one hundred character limit to test the maximum length validation rule\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Missing Rating",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Missing rating rejected (400)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.execution.setNextRequest('Review: Negative Rating (-1)');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"comment\": \"No rating provided\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Negative Rating (-1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Negative rating rejected (400)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.execution.setNextRequest(\"Review: Company doesn't exist\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": -1,\n    \"comment\": \"Negative rating test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Company doesn't exist",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Company does not exist rejected (400)', function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "pm.execution.setNextRequest('Review: Edge Case Rating 1 (Min)');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 4,\n    \"comment\": \"Company does not exist.\"\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/00000000000/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                "00000000000",
+                "reviews"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Edge Case Rating 1 (Min)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Rating 1 accepted (201)', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "pm.test('Rating is exactly 1', function () {",
+                  "    pm.expect(pm.response.json().data.rating).to.eql(1);",
+                  "});",
+                  "pm.environment.set('REVIEW_ID', pm.response.json().data._id);",
+                  "pm.execution.setNextRequest('Review: Edge Case Update to Rating 5 (Max)');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 1,\n    \"comment\": \"Minimum rating boundary test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Edge Case Update to Rating 5 (Max)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Rating 5 accepted (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Rating is exactly 5', function () {",
+                  "    pm.expect(pm.response.json().data.rating).to.eql(5);",
+                  "});",
+                  "pm.execution.setNextRequest('Review: Edge Case Comment Exactly 100 Chars');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 5,\n    \"comment\": \"Maximum rating boundary test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Edge Case Comment Exactly 100 Chars",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Comment with exactly 100 chars accepted (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.execution.setNextRequest('Review: Cannot overwrite company or user fields (fields unchanged)');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 4,\n    \"comment\": \"This comment is exactly one hundred characters long! Let me count carefully to make sure it fits OK!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Cannot overwrite company or user fields (fields unchanged)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('company not changed to injected value', () => {",
+                  "  const companyVal = typeof json.data.company === 'object' ? json.data.company._id : json.data.company;",
+                  "  pm.expect(companyVal).to.not.equal('000000000000000000000000');",
+                  "});",
+                  "pm.execution.setNextRequest('Rating: averageRating and numReviews populated');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4,\n  \"comment\": \"This comment is exactly one hundred characters long! Let me count carefully to make sure it fits OK!\",\n  \"company\": \"000000000000000000000000\",\n  \"user\": \"000000000000000000000000\"\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rating: averageRating and numReviews populated",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const company = pm.response.json().data;",
+                  "pm.test('averageRating is a number', () => pm.expect(company.averageRating).to.be.a('number'));",
+                  "pm.test('numReviews >= 1', () => pm.expect(company.numReviews).to.be.at.least(1));",
+                  "pm.test('averageRating between 1 and 5', () => {",
+                  "  pm.expect(company.averageRating).to.be.at.least(1);",
+                  "  pm.expect(company.averageRating).to.be.at.most(5);",
+                  "});",
+                  "pm.execution.setNextRequest('Rating: Cleanup Delete');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/{{COMPANY_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                "{{COMPANY_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rating: Cleanup Delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Cleanup review deleted (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.execution.setNextRequest(\"Rating: numReviews decremented after delete\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rating: numReviews decremented after delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const company = pm.response.json().data;",
+                  "pm.test('numReviews is a number', () => pm.expect(company.numReviews).to.be.a('number'));",
+                  "pm.execution.setNextRequest(\"Normal User Login 3\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/{{COMPANY_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                "{{COMPANY_ID}}"
+              ]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "Review: Get Company Reviews",
-      "event": [
+      "name": "Admin Review",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Status code is 200', function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "pm.test('At least 1 review exists', function () {",
-              "    pm.expect(pm.response.json().count).to.be.above(0);",
-              "});",
-              "pm.execution.setNextRequest('Review: Get Single Review');"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "companies", ":companyId", "reviews"],
-          "variable": [
+          "name": "Normal User Login 3",
+          "event": [
             {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 (Login Success)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "const response = pm.response.json();\r",
+                  "pm.test(\"Token is generated\", function () {\r",
+                  "    pm.expect(response).to.have.property('token');\r",
+                  "});\r",
+                  "// เก็บ Token และส่งไม้ต่อ\r",
+                  "pm.environment.set(\"TOKEN\", response.token);\r",
+                  "pm.execution.setNextRequest(\"Review: Create Valid Review 2\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
             }
-          ]
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{TEST_EMAIL}}\",\r\n    \"password\": \"password123\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/login",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Create Valid Review 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Review created successfully (201)', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.test('Review has correct rating', function () {",
+                  "    pm.expect(response.data.rating).to.eql(3);",
+                  "});",
+                  "pm.environment.set('USER_REVIEW_ID', response.data._id);",
+                  "pm.execution.setNextRequest('Normal User Log Out 2');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 3,\n    \"comment\": \"Great company to work with\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Normal User Log Out 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Logout Successful (200)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.environment.unset(\"TOKEN\");\r",
+                  "pm.execution.setNextRequest(\"Admin Login 2\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/logout",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Login 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin Login Successful\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "const response = pm.response.json();\r",
+                  "pm.environment.set(\"ADMIN_TOKEN\", response.token);\r",
+                  "pm.environment.set(\"TOKEN\", response.token);\r",
+                  "pm.execution.setNextRequest(\"Review: Admin View All Reviews\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"admin@gmail.com\",\r\n    \"password\":\"12345678\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/login",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Admin View All Reviews",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin can view bookings (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.test(\"Admin can view all reviews\"),function (){",
+                  "    pm.expect(response.data[0].id).to.be(pm.environment.get(\"USER_REVIEW_ID\"))",
+                  "}",
+                  "pm.execution.setNextRequest(\"Review: Admin View Any Reviews\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews?sort=-createdAt",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "-createdAt"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Admin View Any Reviews",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin can view bookings (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.test(\"Admin can view any reviews\"),function (){",
+                  "    pm.expect(response.data[0].id).to.be(pm.environment.get(\"USER_REVIEW_ID\"))",
+                  "}",
+                  "pm.execution.setNextRequest(\"Review: Admin Delete Review\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{USER_REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{USER_REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Admin Delete Review",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Review deleted (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.execution.setNextRequest('Review: Admin View All Reviews 2');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{USER_REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{USER_REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Admin View All Reviews 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin can view bookings (200)\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.test(\"Admin can view all reviews\"),function (){",
+                  "    pm.expect(response.count).to.be(3);",
+                  "}",
+                  "pm.execution.setNextRequest(\"Review: Admin Delete Review 2\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews?sort=-createdAt",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "-createdAt"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Admin Delete Review 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Review deleted (404)', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.execution.setNextRequest('Admin Logout 2');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{USER_REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{USER_REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Logout 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin can delete user booking (200)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.environment.unset(\"TOKEN\");\r",
+                  "pm.environment.unset(\"ADMIN_TOKEN\");\r",
+                  "pm.execution.setNextRequest(\"Admin Login 3\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/logout",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "Review: Get Single Review",
-      "event": [
+      "name": "Unauthorized Review",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Status code is 200', function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "pm.test('Review data returned', function () {",
-              "    pm.expect(pm.response.json().data).to.have.property('rating');",
-              "    pm.expect(pm.response.json().data).to.have.property('comment');",
-              "});",
-              "pm.execution.setNextRequest('Review: Update Review');"
+          "name": "Admin Login 3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin Login Successful\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "const response = pm.response.json();\r",
+                  "pm.environment.set(\"ADMIN_TOKEN\", response.token);\r",
+                  "pm.environment.set(\"TOKEN\", response.token);\r",
+                  "pm.execution.setNextRequest(\"Review: Create Valid Review 3\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
             ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"admin@gmail.com\",\r\n    \"password\":\"12345678\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/login",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Create Valid Review 3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Review created successfully (201)', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.test('Review has correct rating', function () {",
+                  "    pm.expect(response.data.rating).to.eql(3);",
+                  "});",
+                  "pm.environment.set('USER_REVIEW_ID', response.data._id);",
+                  "pm.execution.setNextRequest('Admin Logout 3');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 3,\n    \"comment\": \"Great company to work with\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Logout 3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin can delete user booking (200)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.environment.unset(\"TOKEN\");\r",
+                  "pm.execution.setNextRequest(\"Review: Can't Create Review\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/logout",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Can't Create Review",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Unauthorized (401)', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.execution.setNextRequest(\"Review: Can't Update Review\");",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 3,\n    \"comment\": \"Great company to work with\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "companies",
+                ":companyId",
+                "reviews"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "{{COMPANY_ID}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Can't Update Review",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Unauthorized (401)', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.execution.setNextRequest(\"Rating: Can't Delete Review\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 5,\n    \"comment\": \"Updated review\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{USER_REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{USER_REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rating: Can't Delete Review",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Unauthorized (401)', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "pm.execution.setNextRequest(\"Normal User Login 4\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{USER_REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{USER_REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Normal User Login 4",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 (Login Success)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "const response = pm.response.json();\r",
+                  "pm.test(\"Token is generated\", function () {\r",
+                  "    pm.expect(response).to.have.property('token');\r",
+                  "});\r",
+                  "// เก็บ Token และส่งไม้ต่อ\r",
+                  "pm.environment.set(\"TOKEN\", response.token);\r",
+                  "pm.execution.setNextRequest(\"Review: Can't Update Review 2\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{TEST_EMAIL}}\",\r\n    \"password\": \"password123\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/login",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review: Can't Update Review 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Unauthorized (401)', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "pm.execution.setNextRequest(\"Rating: Can't Delete Review 2\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 5,\n    \"comment\": \"Updated review\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{USER_REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{USER_REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rating: Can't Delete Review 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Unauthorized (401)', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "pm.execution.setNextRequest(\"Normal User Log Out 3\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{USER_REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{USER_REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Normal User Log Out 3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Logout Successful (200)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.environment.unset(\"TOKEN\");\r",
+                  "pm.execution.setNextRequest(\"Rating: Cleanup Delete 2\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/logout",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rating: Cleanup Delete 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Cleanup review deleted (200)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.execution.setNextRequest(\"Normal User Login 5\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ADMIN_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/reviews/{{USER_REVIEW_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "{{USER_REVIEW_ID}}"
+              ]
+            }
+          },
+          "response": []
         }
-      ],
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{URL}}/api/v1/reviews/{{REVIEW_ID}}",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "reviews", "{{REVIEW_ID}}"]
-        }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "Review: Update Review",
-      "event": [
+      "name": "User Blog",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Review updated (200)', function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "pm.test('Rating updated to 5', function () {",
-              "    pm.expect(pm.response.json().data.rating).to.eql(5);",
-              "});",
-              "pm.execution.setNextRequest('Review: Delete Review');"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
+          "name": "Normal User Login 5",
+          "event": [
             {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 (Login Success)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "const response = pm.response.json();\r",
+                  "pm.test(\"Token is generated\", function () {\r",
+                  "    pm.expect(response).to.have.property('token');\r",
+                  "});\r",
+                  "// เก็บ Token และส่งไม้ต่อ\r",
+                  "pm.environment.set(\"TOKEN\", response.token);\r",
+                  "pm.execution.setNextRequest(\"Blog: Create Blog\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
             }
-          ]
-        },
-        "method": "PUT",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"rating\": 5,\n    \"comment\": \"Updated review\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{TEST_EMAIL}}\",\r\n    \"password\": \"password123\"\r\n}"
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/login",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
             }
-          }
+          },
+          "response": []
         },
-        "url": {
-          "raw": "{{URL}}/api/v1/reviews/{{REVIEW_ID}}",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "reviews", "{{REVIEW_ID}}"]
+        {
+          "name": "Blog: Create Blog",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Blog created successfully (201)', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.test('Blog has title and content', function () {",
+                  "    pm.expect(response.data).to.have.property('title');",
+                  "    pm.expect(response.data).to.have.property('content');",
+                  "});",
+                  "pm.environment.set('BLOG_ID', response.data._id);",
+                  "pm.execution.setNextRequest('Blog: Create Blog Missing Title');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"My First Blog\",\n    \"content\": \"This is blog content\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/blogs",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "blogs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blog: Create Blog Missing Title",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Missing title rejected (400)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Error message about title and content', function () {",
+                  "    pm.expect(pm.response.json().message).to.include('Title and Content');",
+                  "});",
+                  "pm.execution.setNextRequest('Blog: Create Blog Missing Content');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"content\": \"No title provided\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/blogs",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "blogs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blog: Create Blog Missing Content",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Missing content rejected (400)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Error message about title and content', function () {",
+                  "    pm.expect(pm.response.json().message).to.include('Title and Content');",
+                  "});",
+                  "pm.execution.setNextRequest('Blog: Create Blog Title Over 50 Chars');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Only title no content\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/blogs",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "blogs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blog: Create Blog Title Over 50 Chars",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Title over 50 chars rejected (400)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Error message about title limit', function () {",
+                  "    pm.expect(pm.response.json().message).to.include('Character limit exceeded at title');",
+                  "});",
+                  "pm.execution.setNextRequest('Blog: Create Blog Content Over 50 Chars');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"This title is way too long and exceeds the fifty character limit for sure\",\n    \"content\": \"Valid content\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/blogs",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "blogs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blog: Create Blog Content Over 50 Chars",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Content over 50 chars rejected (400)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Error message about content limit', function () {",
+                  "    pm.expect(pm.response.json().message).to.include('Character limit exceeded at content');",
+                  "});",
+                  "pm.execution.setNextRequest('Blog: Get All Blogs');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Valid title\",\n    \"content\": \"This content is way too long and exceeds the fifty character limit for sure\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/blogs",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "blogs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blog: Get All Blogs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.test('At least 1 blog exists', function () {",
+                  "    pm.expect(response.count).to.be.above(0);",
+                  "});",
+                  "pm.test('Response has data array', function () {",
+                  "    pm.expect(response.data).to.be.an('array');",
+                  "});",
+                  "pm.execution.setNextRequest('Blog: Get Single Blog');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/blogs",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "blogs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blog: Get Single Blog",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Blog data returned', function () {",
+                  "    const data = pm.response.json().data;",
+                  "    pm.expect(data).to.have.property('title');",
+                  "    pm.expect(data).to.have.property('content');",
+                  "});",
+                  "pm.execution.setNextRequest('Blog: Get Non-Existent Blog');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/blogs/{{BLOG_ID}}",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "blogs",
+                "{{BLOG_ID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blog: Get Non-Existent Blog",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Non-existent blog returns 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.execution.setNextRequest('Comment: Create Comment');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/blogs/000000000000000000000000",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "blogs",
+                "000000000000000000000000"
+              ]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "Review: Delete Review",
-      "event": [
+      "name": "User Comment",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Review deleted (200)', function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "pm.execution.setNextRequest('Review: Rating Below Min (0)');"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
+          "name": "Comment: Create Comment",
+          "event": [
             {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Comment created successfully (201)', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.test('Comment has text', function () {",
+                  "    pm.expect(response.data).to.have.property('text');",
+                  "});",
+                  "pm.environment.set('COMMENT_ID', response.data._id);",
+                  "pm.execution.setNextRequest('Comment: Create Comment Missing Text');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
             }
-          ]
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"text\": \"This is a test comment\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/blogs/{{BLOG_ID}}/comments",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "blogs",
+                "{{BLOG_ID}}",
+                "comments"
+              ]
+            }
+          },
+          "response": []
         },
-        "method": "DELETE",
-        "header": [],
-        "url": {
-          "raw": "{{URL}}/api/v1/reviews/{{REVIEW_ID}}",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "reviews", "{{REVIEW_ID}}"]
+        {
+          "name": "Comment: Create Comment Missing Text",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Missing text rejected (400)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Error message about text', function () {",
+                  "    pm.expect(pm.response.json().message).to.include('Please enter text');",
+                  "});",
+                  "pm.execution.setNextRequest('Comment: Create Comment Over 100 Chars');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/blogs/{{BLOG_ID}}/comments",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "blogs",
+                "{{BLOG_ID}}",
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Comment: Create Comment Over 100 Chars",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Comment over 100 chars rejected (400)', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test('Error message about character limit', function () {",
+                  "    pm.expect(pm.response.json().message).to.include('Character limit exceeded');",
+                  "});",
+                  "pm.execution.setNextRequest('Comment: Get Blog Comments');"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"text\": \"This comment is intentionally made very long so that it exceeds the one hundred character limit for validation testing purposes\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/blogs/{{BLOG_ID}}/comments",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "blogs",
+                "{{BLOG_ID}}",
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Comment: Get Blog Comments",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "const response = pm.response.json();",
+                  "pm.test('At least 1 comment exists', function () {",
+                  "    pm.expect(response.count).to.be.above(0);",
+                  "});",
+                  "pm.test('Response has data array', function () {",
+                  "    pm.expect(response.data).to.be.an('array');",
+                  "});",
+                  "pm.execution.setNextRequest(\"Normal User Log Out 5\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL}}/api/v1/blogs/{{BLOG_ID}}/comments",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "blogs",
+                "{{BLOG_ID}}",
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Normal User Log Out 5",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Logout Successful (200)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "pm.environment.unset(\"TOKEN\");\r",
+                  "pm.execution.setNextRequest(null);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "JSON Type",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{URL}}/api/v1/auth/logout",
+              "host": [
+                "{{URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
     },
     {
-      "name": "Review: Rating Below Min (0)",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Rating 0 rejected (400)', function () {",
-              "    pm.response.to.have.status(400);",
-              "});",
-              "pm.execution.setNextRequest('Review: Rating Above Max (6)');"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"rating\": 0,\n    \"comment\": \"Bad rating test\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "companies", ":companyId", "reviews"],
-          "variable": [
-            {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Review: Rating Above Max (6)",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Rating 6 rejected (400)', function () {",
-              "    pm.response.to.have.status(400);",
-              "});",
-              "pm.execution.setNextRequest('Review: Decimal Rating (3.5)');"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"rating\": 6,\n    \"comment\": \"Too high rating\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "companies", ":companyId", "reviews"],
-          "variable": [
-            {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Review: Decimal Rating (3.5)",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Decimal rating rejected (400)', function () {",
-              "    pm.response.to.have.status(400);",
-              "});",
-              "pm.execution.setNextRequest('Review: Missing Comment');"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"rating\": 3.5,\n    \"comment\": \"Decimal rating test\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "companies", ":companyId", "reviews"],
-          "variable": [
-            {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Review: Missing Comment",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Missing comment rejected (400)', function () {",
-              "    pm.response.to.have.status(400);",
-              "});",
-              "pm.execution.setNextRequest('Review: Comment Over 100 Chars');"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"rating\": 4\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "companies", ":companyId", "reviews"],
-          "variable": [
-            {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Review: Comment Over 100 Chars",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Comment over 100 chars rejected (400)', function () {",
-              "    pm.response.to.have.status(400);",
-              "});",
-              "pm.execution.setNextRequest('Review: Missing Rating');"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"rating\": 4,\n    \"comment\": \"This is a very long comment that exceeds the one hundred character limit to test the maximum length validation rule\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "companies", ":companyId", "reviews"],
-          "variable": [
-            {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Review: Missing Rating",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Missing rating rejected (400)', function () {",
-              "    pm.response.to.have.status(400);",
-              "});",
-              "pm.execution.setNextRequest('Review: Negative Rating (-1)');"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"comment\": \"No rating provided\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "companies", ":companyId", "reviews"],
-          "variable": [
-            {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Review: Negative Rating (-1)",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Negative rating rejected (400)', function () {",
-              "    pm.response.to.have.status(400);",
-              "});",
-              "pm.execution.setNextRequest('Review: Edge Case Rating 1 (Min)');"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"rating\": -1,\n    \"comment\": \"Negative rating test\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "companies", ":companyId", "reviews"],
-          "variable": [
-            {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Review: Edge Case Rating 1 (Min)",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Rating 1 accepted (201)', function () {",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-              "});",
-              "pm.test('Rating is exactly 1', function () {",
-              "    pm.expect(pm.response.json().data.rating).to.eql(1);",
-              "});",
-              "pm.environment.set('REVIEW_ID', pm.response.json().data._id);",
-              "pm.execution.setNextRequest('Review: Edge Case Update to Rating 5 (Max)');"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"rating\": 1,\n    \"comment\": \"Minimum rating boundary test\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/companies/:companyId/reviews",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "companies", ":companyId", "reviews"],
-          "variable": [
-            {
-              "key": "companyId",
-              "value": "{{COMPANY_ID}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Review: Edge Case Update to Rating 5 (Max)",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Rating 5 accepted (200)', function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "pm.test('Rating is exactly 5', function () {",
-              "    pm.expect(pm.response.json().data.rating).to.eql(5);",
-              "});",
-              "pm.execution.setNextRequest('Review: Edge Case Comment Exactly 100 Chars');"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "PUT",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"rating\": 5,\n    \"comment\": \"Maximum rating boundary test\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/reviews/{{REVIEW_ID}}",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "reviews", "{{REVIEW_ID}}"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Review: Edge Case Comment Exactly 100 Chars",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Comment with exactly 100 chars accepted (200)', function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "pm.execution.setNextRequest('Review: Cleanup Delete');"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "PUT",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json",
-            "type": "text"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"rating\": 4,\n    \"comment\": \"This comment is exactly one hundred characters long! Let me count carefully to make sure it fits OK!\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}/api/v1/reviews/{{REVIEW_ID}}",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "reviews", "{{REVIEW_ID}}"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Review: Cleanup Delete",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Cleanup review deleted (200)', function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "pm.execution.setNextRequest(null);"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{ADMIN_TOKEN}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "DELETE",
-        "header": [],
-        "url": {
-          "raw": "{{URL}}/api/v1/reviews/{{REVIEW_ID}}",
-          "host": ["{{URL}}"],
-          "path": ["api", "v1", "reviews", "{{REVIEW_ID}}"]
-        }
-      },
-      "response": []
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
     }
   ],
   "variable": [
     {
       "key": "URL",
-      "value": "https://backend-api-tawny-phi.vercel.app",
-      "type": "string"
+      "value": "https://job-fair-api-1058769825908.asia-southeast1.run.app"
     }
   ]
 }
