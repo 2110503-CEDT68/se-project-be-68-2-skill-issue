@@ -1,5 +1,16 @@
 const Comment = require('../models/Comment.js');
 
+exports.getComments = async (req, res, next) => {
+  try {
+    const query = Comment.find({ blog: req.params.id }).populate('author', 'name').sort('-effectiveDate');
+    const comments = await query;
+    res.status(200).json({ success: true, count: comments.length, data: comments });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 exports.addComment = async (req, res, next) => {
   try {
 

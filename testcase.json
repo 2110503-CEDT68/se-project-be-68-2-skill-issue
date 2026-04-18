@@ -1869,7 +1869,7 @@
               "pm.test('Cleanup review deleted (200)', function () {",
               "    pm.response.to.have.status(200);",
               "});",
-              "pm.execution.setNextRequest(null);"
+              "pm.execution.setNextRequest('Blog: Create Blog');"
             ],
             "type": "text/javascript",
             "packages": {},
@@ -1897,12 +1897,560 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "Blog: Create Blog",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Blog created successfully (201)', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              "const response = pm.response.json();",
+              "pm.test('Blog has title and content', function () {",
+              "    pm.expect(response.data).to.have.property('title');",
+              "    pm.expect(response.data).to.have.property('content');",
+              "});",
+              "pm.environment.set('BLOG_ID', response.data._id);",
+              "pm.execution.setNextRequest('Blog: Create Blog Missing Title');"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"My First Blog\",\n    \"content\": \"This is blog content\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/api/v1/blogs",
+          "host": ["{{URL}}"],
+          "path": ["api", "v1", "blogs"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Blog: Create Blog Missing Title",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Missing title rejected (400)', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "pm.test('Error message about title and content', function () {",
+              "    pm.expect(pm.response.json().message).to.include('Title and Content');",
+              "});",
+              "pm.execution.setNextRequest('Blog: Create Blog Missing Content');"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"content\": \"No title provided\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/api/v1/blogs",
+          "host": ["{{URL}}"],
+          "path": ["api", "v1", "blogs"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Blog: Create Blog Missing Content",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Missing content rejected (400)', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "pm.test('Error message about title and content', function () {",
+              "    pm.expect(pm.response.json().message).to.include('Title and Content');",
+              "});",
+              "pm.execution.setNextRequest('Blog: Create Blog Title Over 50 Chars');"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"Only title no content\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/api/v1/blogs",
+          "host": ["{{URL}}"],
+          "path": ["api", "v1", "blogs"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Blog: Create Blog Title Over 50 Chars",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Title over 50 chars rejected (400)', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "pm.test('Error message about title limit', function () {",
+              "    pm.expect(pm.response.json().message).to.include('Character limit exceeded at title');",
+              "});",
+              "pm.execution.setNextRequest('Blog: Create Blog Content Over 50 Chars');"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"This title is way too long and exceeds the fifty character limit for sure\",\n    \"content\": \"Valid content\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/api/v1/blogs",
+          "host": ["{{URL}}"],
+          "path": ["api", "v1", "blogs"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Blog: Create Blog Content Over 50 Chars",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Content over 50 chars rejected (400)', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "pm.test('Error message about content limit', function () {",
+              "    pm.expect(pm.response.json().message).to.include('Character limit exceeded at content');",
+              "});",
+              "pm.execution.setNextRequest('Blog: Get All Blogs');"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"Valid title\",\n    \"content\": \"This content is way too long and exceeds the fifty character limit for sure\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/api/v1/blogs",
+          "host": ["{{URL}}"],
+          "path": ["api", "v1", "blogs"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Blog: Get All Blogs",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const response = pm.response.json();",
+              "pm.test('At least 1 blog exists', function () {",
+              "    pm.expect(response.count).to.be.above(0);",
+              "});",
+              "pm.test('Response has data array', function () {",
+              "    pm.expect(response.data).to.be.an('array');",
+              "});",
+              "pm.execution.setNextRequest('Blog: Get Single Blog');"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{URL}}/api/v1/blogs",
+          "host": ["{{URL}}"],
+          "path": ["api", "v1", "blogs"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Blog: Get Single Blog",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Blog data returned', function () {",
+              "    const data = pm.response.json().data;",
+              "    pm.expect(data).to.have.property('title');",
+              "    pm.expect(data).to.have.property('content');",
+              "});",
+              "pm.execution.setNextRequest('Blog: Get Non-Existent Blog');"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{URL}}/api/v1/blogs/{{BLOG_ID}}",
+          "host": ["{{URL}}"],
+          "path": ["api", "v1", "blogs", "{{BLOG_ID}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Blog: Get Non-Existent Blog",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Non-existent blog returns 404', function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "pm.execution.setNextRequest('Comment: Create Comment');"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{URL}}/api/v1/blogs/000000000000000000000000",
+          "host": ["{{URL}}"],
+          "path": ["api", "v1", "blogs", "000000000000000000000000"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Comment: Create Comment",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Comment created successfully (201)', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              "const response = pm.response.json();",
+              "pm.test('Comment has text', function () {",
+              "    pm.expect(response.data).to.have.property('text');",
+              "});",
+              "pm.environment.set('COMMENT_ID', response.data._id);",
+              "pm.execution.setNextRequest('Comment: Create Comment Missing Text');"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"text\": \"This is a test comment\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/api/v1/blogs/{{BLOG_ID}}/comments",
+          "host": ["{{URL}}"],
+          "path": ["api", "v1", "blogs", "{{BLOG_ID}}", "comments"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Comment: Create Comment Missing Text",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Missing text rejected (400)', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "pm.test('Error message about text', function () {",
+              "    pm.expect(pm.response.json().message).to.include('Please enter text');",
+              "});",
+              "pm.execution.setNextRequest('Comment: Create Comment Over 100 Chars');"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/api/v1/blogs/{{BLOG_ID}}/comments",
+          "host": ["{{URL}}"],
+          "path": ["api", "v1", "blogs", "{{BLOG_ID}}", "comments"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Comment: Create Comment Over 100 Chars",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Comment over 100 chars rejected (400)', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "pm.test('Error message about character limit', function () {",
+              "    pm.expect(pm.response.json().message).to.include('Character limit exceeded');",
+              "});",
+              "pm.execution.setNextRequest('Comment: Get Blog Comments');"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"text\": \"This comment is intentionally made very long so that it exceeds the one hundred character limit for validation testing purposes\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/api/v1/blogs/{{BLOG_ID}}/comments",
+          "host": ["{{URL}}"],
+          "path": ["api", "v1", "blogs", "{{BLOG_ID}}", "comments"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Comment: Get Blog Comments",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const response = pm.response.json();",
+              "pm.test('At least 1 comment exists', function () {",
+              "    pm.expect(response.count).to.be.above(0);",
+              "});",
+              "pm.test('Response has data array', function () {",
+              "    pm.expect(response.data).to.be.an('array');",
+              "});",
+              "pm.execution.setNextRequest(null);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{URL}}/api/v1/blogs/{{BLOG_ID}}/comments",
+          "host": ["{{URL}}"],
+          "path": ["api", "v1", "blogs", "{{BLOG_ID}}", "comments"]
+        }
+      },
+      "response": []
     }
   ],
   "variable": [
     {
       "key": "URL",
-      "value": "https://backend-api-tawny-phi.vercel.app",
+      "value": "http://localhost:5000",
       "type": "string"
     }
   ]

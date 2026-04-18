@@ -1,7 +1,7 @@
 jest.mock('../../models/Blog');
 
 const Blog = require('../../models/Blog');
-const { addBlog } = require('../../controllers/blogs');
+const { getBlogs, getBlog, addBlog } = require('../../controllers/blogs');
 
 describe('Blogs Controller', () => {
   let req, res, next;
@@ -9,6 +9,7 @@ describe('Blogs Controller', () => {
   beforeEach(() => {
     req = {
       body: {},
+      params: {},
       user: { id: 'user123' }
     };
     res = {
@@ -17,6 +18,72 @@ describe('Blogs Controller', () => {
     };
     next = jest.fn();
     jest.clearAllMocks();
+  });
+
+  describe('getBlogs', () => {
+    it('should return all blogs', async () => {
+      const mockBlogs = [{ _id: 'b1', title: 'Blog 1' }, { _id: 'b2', title: 'Blog 2' }];
+      const mockQuery = { populate: jest.fn().mockReturnThis(), sort: jest.fn().mockResolvedValue(mockBlogs) };
+      Blog.find.mockReturnValue(mockQuery);
+
+      await getBlogs(req, res, next);
+
+      expect(Blog.find).toHaveBeenCalled();
+      expect(mockQuery.populate).toHaveBeenCalledWith('author', 'name');
+      expect(mockQuery.sort).toHaveBeenCalledWith('-effectiveDate');
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ success: true, count: 2, data: mockBlogs });
+    });
+
+    it('should return 500 on error', async () => {
+      const mockQuery = { populate: jest.fn().mockReturnThis(), sort: jest.fn().mockRejectedValue(new Error('DB error')) };
+      Blog.find.mockReturnValue(mockQuery);
+
+      await getBlogs(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ success: false, message: 'DB error' });
+    });
+  });
+
+  describe('getBlog', () => {
+    it('should return a single blog with comments', async () => {
+      const mockBlog = { _id: 'b1', title: 'Blog 1' };
+      const mockQuery = { populate: jest.fn().mockReturnThis() };
+      mockQuery.populate.mockReturnValueOnce(mockQuery).mockResolvedValueOnce(mockBlog);
+      Blog.findById.mockReturnValue(mockQuery);
+
+      req.params.id = 'b1';
+      await getBlog(req, res, next);
+
+      expect(Blog.findById).toHaveBeenCalledWith('b1');
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ success: true, data: mockBlog });
+    });
+
+    it('should return 404 if blog not found', async () => {
+      const mockQuery = { populate: jest.fn().mockReturnThis() };
+      mockQuery.populate.mockReturnValueOnce(mockQuery).mockResolvedValueOnce(null);
+      Blog.findById.mockReturnValue(mockQuery);
+
+      req.params.id = 'nonexistent';
+      await getBlog(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({ success: false, message: 'Blog not found' });
+    });
+
+    it('should return 500 on error', async () => {
+      const mockQuery = { populate: jest.fn().mockReturnThis() };
+      mockQuery.populate.mockReturnValueOnce(mockQuery).mockRejectedValueOnce(new Error('DB error'));
+      Blog.findById.mockReturnValue(mockQuery);
+
+      req.params.id = 'b1';
+      await getBlog(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ success: false, message: 'DB error' });
+    });
   });
 
   describe('addBlog', () => {
