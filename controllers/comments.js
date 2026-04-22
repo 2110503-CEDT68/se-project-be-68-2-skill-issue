@@ -43,3 +43,66 @@ exports.addComment = async (req, res, next) => {
     return res.status(500).json({ success: false, message: err.message });
   }
 };
+
+exports.getComment = async (req, res, next) => {
+  try {
+    const comment = await Comment.findById(req.params.commentId).populate('author', 'name');
+    if (!comment) {
+      return res.status(404).json({ success: false, message: 'Comment not found' });
+    }
+    return res.status(200).json({ success: true, data: comment });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+exports.updateComment = async (req, res, next) => {
+  try {
+    let comment = await Comment.findById(req.params.commentId);
+    if (!comment) {
+      return res.status(404).json({ success: false, message: 'Comment not found' });
+    }
+
+    if (comment.author.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(401).json({ success: false, message: 'Not authorized to update this comment' });
+    }
+
+    if (req.body.text === undefined) {
+      return res.status(400).json({ success: false, message: 'Please provide text to update' });
+    }
+    if (req.body.text.toString().length > 100) {
+      return res.status(400).json({ success: false, message: 'Character limit exceeded' });
+    }
+
+    comment = await Comment.findByIdAndUpdate(
+      req.params.commentId,
+      { $set: { text: req.body.text, edited: true, editedAt: Date.now() } },
+      { new: true, runValidators: true }
+    ).populate('author', 'name');
+
+    return res.status(200).json({ success: true, data: comment });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+exports.deleteComment = async (req, res, next) => {
+  try {
+    const comment = await Comment.findById(req.params.commentId);
+    if (!comment) {
+      return res.status(404).json({ success: false, message: 'Comment not found' });
+    }
+
+    if (comment.author.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(401).json({ success: false, message: 'Not authorized to delete this comment' });
+    }
+
+    await Comment.findByIdAndDelete(req.params.commentId);
+    return res.status(200).json({ success: true, data: {} });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
