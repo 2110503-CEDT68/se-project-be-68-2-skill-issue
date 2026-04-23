@@ -1,11 +1,52 @@
 
 const Blog = require('../models/Blog.js');
 
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 25;
+
+const parsePositiveInteger = (value, fallback) => {
+  const parsedValue = parseInt(value, 10);
+  return Number.isNaN(parsedValue) || parsedValue < 1 ? fallback : parsedValue;
+};
+
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 exports.getBlogs = async (req, res, next) => {
   try {
-    const query = Blog.find().populate('author', 'name').sort('-effectiveDate');
-    const blogs = await query;
-    res.status(200).json({ success: true, count: blogs.length, data: blogs });
+    const filters = {};
+    const searchTerm = typeof req.query.search === 'string' ? req.query.search.trim() : '';
+
+    if (searchTerm) {
+      const escapedSearchTerm = escapeRegex(searchTerm);
+      filters.$or = [
+        { title: { $regex: escapedSearchTerm, $options: 'i' } },
+        { content: { $regex: escapedSearchTerm, $options: 'i' } }
+      ];
+    }
+
+    const page = parsePositiveInteger(req.query.page, DEFAULT_PAGE);
+    const limit = parsePositiveInteger(req.query.limit, DEFAULT_LIMIT);
+    const startIndex = (page - 1) * limit;
+    const total = await Blog.countDocuments(filters);
+
+    const blogs = await Blog.find(filters)
+      .populate('author', 'name')
+      .sort('-effectiveDate')
+      .skip(startIndex)
+      .limit(limit);
+
+    const totalPages = total === 0 ? 0 : Math.ceil(total / limit);
+    const pagination = { page, limit, total, totalPages };
+
+    if (page < totalPages) {
+      pagination.next = { page: page + 1, limit };
+    }
+
+    if (startIndex > 0 && total > 0) {
+      pagination.prev = { page: page - 1, limit };
+    }
+
+    res.status(200).json({ success: true, count: blogs.length, pagination, data: blogs });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ success: false, message: err.message });
