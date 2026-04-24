@@ -103,33 +103,42 @@ exports.updateBlog = async (req, res, next) => {
     }
 
     if (blog.author.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(401).json({ success: false, message: 'Not authorized to update this blog' });
+      return res.status(403).json({ success: false, message: 'Not authorized to update this blog' });
     }
 
-    const allowedUpdates = {};
-    if (req.body.title !== undefined) {
-      if (req.body.title.toString().length > 50)
-        return res.status(400).json({ success: false, message: 'Character limit exceeded at title' });
-      allowedUpdates.title = req.body.title;
-    }
-    if (req.body.content !== undefined) {
-      if (req.body.content.toString().length > 50)
-        return res.status(400).json({ success: false, message: 'Character limit exceeded at content' });
-      allowedUpdates.content = req.body.content;
-    }
 
-    if (Object.keys(allowedUpdates).length === 0) {
-      return res.status(400).json({ success: false, message: 'Please provide title or content to update' });
+    const newTitle = req.body.title ?? blog.title;
+    const newContent = req.body.content ?? blog.content;
+
+
+    const trimmedTitle = (newTitle ?? '').toString().trim();
+    const trimmedContent = (newContent ?? '').toString().trim();
+    if(!trimmedTitle) {
+      return res.status(400).json({ success: false, message: 'Title cannot be empty' });
     }
 
-    allowedUpdates.edited = true;
-    allowedUpdates.editedAt = Date.now();
+    if(!trimmedContent) {
+      return res.status(400).json({ success: false, message: 'Content cannot be empty' });
+    }
 
-    blog = await Blog.findByIdAndUpdate(
-      req.params.id,
-      { $set: allowedUpdates },
-      { new: true, runValidators: true }
-    ).populate('author', 'name');
+    if (trimmedTitle.length > 50) {
+      return res.status(400).json({ success: false, message: 'Character limit exceeded at title' });
+    }
+    if (trimmedContent.length > 50) {
+      return res.status(400).json({ success: false, message: 'Character limit exceeded at content' });
+    }
+
+    if (blog.title === trimmedTitle && blog.content === trimmedContent) {
+      return res.status(200).json({ success: true, data: blog });
+    }
+
+    blog.title = trimmedTitle;
+    blog.content = trimmedContent;
+    blog.edited = true;
+    blog.editedAt = Date.now();
+    await blog.save();
+    blog = await blog.populate('author', 'name');
+
 
     return res.status(200).json({ success: true, data: blog });
   } catch (err) {
@@ -146,7 +155,7 @@ exports.deleteBlog = async (req, res, next) => {
     }
 
     if (blog.author.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(401).json({ success: false, message: 'Not authorized to delete this blog' });
+      return res.status(403).json({ success: false, message: 'Not authorized to delete this blog' });
     }
 
     await Blog.findByIdAndDelete(req.params.id);

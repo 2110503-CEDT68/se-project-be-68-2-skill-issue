@@ -65,21 +65,26 @@ exports.updateComment = async (req, res, next) => {
     }
 
     if (comment.author.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(401).json({ success: false, message: 'Not authorized to update this comment' });
+      return res.status(403).json({ success: false, message: 'Not authorized to update this comment' });
     }
+    
+    const trimmed = (req.body.text ?? '').toString().trim();  
 
-    if (req.body.text === undefined) {
+    if (!trimmed) {
       return res.status(400).json({ success: false, message: 'Please provide text to update' });
     }
-    if (req.body.text.toString().length > 100) {
+    if (trimmed.length > 100) {
       return res.status(400).json({ success: false, message: 'Character limit exceeded' });
     }
 
-    comment = await Comment.findByIdAndUpdate(
-      req.params.commentId,
-      { $set: { text: req.body.text, edited: true, editedAt: Date.now() } },
-      { new: true, runValidators: true }
-    ).populate('author', 'name');
+    if (comment.text === trimmed) {
+      return res.status(200).json({ success: true, data: comment });
+    }
+    comment.text = trimmed;
+    comment.edited = true;
+    comment.editedAt = Date.now();
+    await comment.save();
+    comment = await comment.populate('author', 'name');
 
     return res.status(200).json({ success: true, data: comment });
   } catch (err) {
@@ -96,7 +101,7 @@ exports.deleteComment = async (req, res, next) => {
     }
 
     if (comment.author.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(401).json({ success: false, message: 'Not authorized to delete this comment' });
+      return res.status(403).json({ success: false, message: 'Not authorized to delete this comment' });
     }
 
     await Comment.findByIdAndDelete(req.params.commentId);
