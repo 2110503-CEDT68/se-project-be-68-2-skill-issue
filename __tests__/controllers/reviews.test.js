@@ -275,6 +275,62 @@ describe('Reviews Controller', () => {
         message: 'Validation error'
       });
     });
+
+    it('should return 400 if rating is invalid', async () => {
+      req.params.id = 'company123';
+      req.body = { rating: 6, comment: 'Test' };
+      Company.findById.mockResolvedValue({ _id: 'company123' });
+
+      await addReview(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: 'Rating must be an integer between 1 and 5'
+      });
+    });
+
+    it('should return 400 if comment is empty', async () => {
+      req.params.id = 'company123';
+      req.body = { rating: 3, comment: '   ' };
+      Company.findById.mockResolvedValue({ _id: 'company123' });
+
+      await addReview(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: 'Comment is required'
+      });
+    });
+
+    it('should return 400 if comment is not provided', async () => {
+      req.params.id = 'company123';
+      req.body = { rating: 3 };
+      Company.findById.mockResolvedValue({ _id: 'company123' });
+
+      await addReview(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: 'Comment is required'
+      });
+    });
+
+    it('should return 400 if comment exceeds 100 characters', async () => {
+      req.params.id = 'company123';
+      req.body = { rating: 3, comment: 'a'.repeat(101) };
+      Company.findById.mockResolvedValue({ _id: 'company123' });
+
+      await addReview(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: 'Comment cannot exceed 100 characters'
+      });
+    });
   });
 describe('updateReview', () => {
   let mockReview;
@@ -396,7 +452,70 @@ describe('updateReview', () => {
   expect(mockReview.save).toHaveBeenCalled();
   expect(res.status).toHaveBeenCalledWith(200);
 });
+
+  it('should return 400 if new rating is invalid', async () => {
+    req.params.id = 'review123';
+    req.body = { rating: 0, comment: 'Valid comment' };
+
+    Review.findById.mockResolvedValue(mockReview);
+
+    await updateReview(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      message: 'Rating must be between 1 and 5'
+    });
+    expect(mockReview.save).not.toHaveBeenCalled();
+  });
+
+  it('should return 400 if comment becomes empty after trim', async () => {
+    req.params.id = 'review123';
+    req.body = { comment: '   ' };
+
+    Review.findById.mockResolvedValue(mockReview);
+
+    await updateReview(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      message: 'Comment is required'
+    });
+  });
+
+  it('should return 400 if no comment provided and review has no existing comment', async () => {
+    req.params.id = 'review123';
+    req.body = {};
+
+    const reviewWithNoComment = { ...mockReview, comment: undefined };
+    Review.findById.mockResolvedValue(reviewWithNoComment);
+
+    await updateReview(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      message: 'Comment is required'
+    });
+  });
+
+  it('should return 400 if comment exceeds 100 characters', async () => {
+    req.params.id = 'review123';
+    req.body = { comment: 'a'.repeat(101) };
+
+    Review.findById.mockResolvedValue(mockReview);
+
+    await updateReview(req, res, next);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      message: 'Comment cannot exceed 100 characters'
+    });
+  });
 });
+
 
   describe('deleteReview', () => {
     it('should delete review successfully', async () => {

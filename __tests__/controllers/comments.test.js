@@ -170,7 +170,7 @@ describe('Comments Controller', () => {
       });
     });
 
-    it('should return 401 if not authorized to update', async () => {
+    it('should return 403 if not authorized to update', async () => {
       req.params = { commentId: 'c1' };
       req.body = { text: 'Updated' };
       req.user = { id: 'user123', role: 'user' };
@@ -179,7 +179,7 @@ describe('Comments Controller', () => {
 
       await updateComment(req, res, next);
 
-      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.status).toHaveBeenCalledWith(403);
       expect(res.json).toHaveBeenCalledWith({
         success: false,
         message: 'Not authorized to update this comment'
@@ -190,33 +190,55 @@ describe('Comments Controller', () => {
       req.params = { commentId: 'c1' };
       req.body = { text: 'Updated text' };
       req.user = { id: 'user123' };
-      const mockComment = { _id: 'c1', author: 'user123', text: 'Original' };
-      const mockQuery = { populate: jest.fn().mockResolvedValue({...mockComment, text: 'Updated text', edited: true}) };
+      const updatedComment = { _id: 'c1', author: 'user123', text: 'Updated text', edited: true };
+      const mockComment = {
+        _id: 'c1',
+        author: 'user123',
+        text: 'Original',
+        save: jest.fn().mockResolvedValue(undefined),
+        populate: jest.fn().mockResolvedValue(updatedComment)
+      };
       Comment.findById.mockResolvedValueOnce(mockComment);
-      Comment.findByIdAndUpdate.mockReturnValue(mockQuery);
 
       await updateComment(req, res, next);
 
-      expect(Comment.findByIdAndUpdate).toHaveBeenCalledWith(
-        'c1',
-        expect.objectContaining({ $set: expect.objectContaining({ text: 'Updated text' }) }),
-        expect.objectContaining({ new: true, runValidators: true })
-      );
+      expect(mockComment.save).toHaveBeenCalled();
+      expect(mockComment.populate).toHaveBeenCalledWith('author', 'name');
       expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ success: true, data: updatedComment });
     });
 
     it('should allow admin to update comment', async () => {
       req.params = { commentId: 'c1' };
       req.body = { text: 'Updated text' };
       req.user = { id: 'user456', role: 'admin' };
-      const mockComment = { _id: 'c1', author: 'user123' };
-      const mockQuery = { populate: jest.fn().mockResolvedValue({...mockComment, text: 'Updated text', edited: true}) };
+      const updatedComment = { _id: 'c1', author: 'user123', text: 'Updated text', edited: true };
+      const mockComment = {
+        _id: 'c1',
+        author: 'user123',
+        text: 'Original',
+        save: jest.fn().mockResolvedValue(undefined),
+        populate: jest.fn().mockResolvedValue(updatedComment)
+      };
       Comment.findById.mockResolvedValueOnce(mockComment);
-      Comment.findByIdAndUpdate.mockReturnValue(mockQuery);
 
       await updateComment(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(200);
+    });
+
+    it('should return 200 without saving if text is unchanged', async () => {
+      req.params = { commentId: 'c1' };
+      req.body = { text: 'Same text' };
+      req.user = { id: 'user123' };
+      const mockComment = { _id: 'c1', author: 'user123', text: 'Same text', save: jest.fn() };
+      Comment.findById.mockResolvedValue(mockComment);
+
+      await updateComment(req, res, next);
+
+      expect(mockComment.save).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ success: true, data: mockComment });
     });
 
     it('should return 400 if text is undefined', async () => {
@@ -280,7 +302,7 @@ describe('Comments Controller', () => {
       });
     });
 
-    it('should return 401 if not authorized to delete', async () => {
+    it('should return 403 if not authorized to delete', async () => {
       req.params = { commentId: 'c1' };
       req.user = { id: 'user123', role: 'user' };
       const mockComment = { _id: 'c1', author: 'user456' };
@@ -288,7 +310,7 @@ describe('Comments Controller', () => {
 
       await deleteComment(req, res, next);
 
-      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.status).toHaveBeenCalledWith(403);
       expect(res.json).toHaveBeenCalledWith({
         success: false,
         message: 'Not authorized to delete this comment'

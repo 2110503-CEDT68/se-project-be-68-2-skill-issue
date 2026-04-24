@@ -1,4 +1,5 @@
-// Test server.js 
+// Test server.js
+const http = require('http');
 process.env.PORT = '5098';
 process.env.NODE_ENV = 'test';
 process.env.JWT_SECRET = 'testsecret';
@@ -10,6 +11,7 @@ jest.mock('../config/db', () => jest.fn().mockResolvedValue(true));
 jest.mock('swagger-jsdoc', () => jest.fn().mockReturnValue({}));
 jest.mock('swagger-ui-express', () => ({
   serve: (req, res, next) => next(),
+  serveFiles: () => (req, res, next) => next(),
   setup: () => (req, res, next) => next()
 }));
 
@@ -49,6 +51,20 @@ describe('Server', () => {
   it('should have unhandledRejection listener', () => {
     const listeners = process.listeners('unhandledRejection');
     expect(listeners.length).toBeGreaterThan(0);
+  });
+
+  it('should redirect GET /api-docs to /api-docs/', done => {
+    http.get(`http://localhost:${process.env.PORT}/api-docs`, (res) => {
+      expect(res.statusCode).toBe(302);
+      done();
+    }).on('error', done);
+  });
+
+  it('should return swagger JSON at GET /api-docs/swagger.json', done => {
+    http.get(`http://localhost:${process.env.PORT}/api-docs/swagger.json`, (res) => {
+      expect(res.statusCode).toBe(200);
+      done();
+    }).on('error', done);
   });
 
   it('should log error and close server on unhandledRejection', done => {

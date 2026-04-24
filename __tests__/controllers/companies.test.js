@@ -243,6 +243,28 @@ describe('Companies Controller', () => {
       expect(res.json).toHaveBeenCalledWith({ success: true, data: mockCompany });
     });
 
+    it('should trim all string fields on update', async () => {
+      req.params.id = 'company123';
+      req.body = {
+        name: '  Trimmed Co  ',
+        address: '  123 St  ',
+        website: '  http://test.com  ',
+        description: '  Some desc  ',
+        telephone_number: '  0812345678  '
+      };
+      const mockCompany = { _id: 'company123', name: 'Trimmed Co' };
+      Company.findByIdAndUpdate.mockResolvedValue(mockCompany);
+
+      await updateCompany(req, res, next);
+
+      expect(req.body.name).toBe('Trimmed Co');
+      expect(req.body.address).toBe('123 St');
+      expect(req.body.website).toBe('http://test.com');
+      expect(req.body.description).toBe('Some desc');
+      expect(req.body.telephone_number).toBe('0812345678');
+      expect(res.status).toHaveBeenCalledWith(200);
+    });
+
     it('should return 400 if company not found', async () => {
       req.params.id = 'nonexistent';
       Company.findByIdAndUpdate.mockResolvedValue(null);

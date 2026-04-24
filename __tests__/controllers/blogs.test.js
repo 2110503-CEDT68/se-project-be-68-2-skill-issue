@@ -215,7 +215,7 @@ describe('Blogs Controller', () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
         success: false,
-        message: 'Please enter Title and Content'
+        message: 'Title cannot be empty'
       });
     });
 
@@ -227,7 +227,7 @@ describe('Blogs Controller', () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
         success: false,
-        message: 'Please enter Title and Content'
+        message: 'Content cannot be empty'
       });
     });
 
@@ -284,7 +284,7 @@ describe('Blogs Controller', () => {
       });
     });
 
-    it('should return 401 if not authorized to update', async () => {
+    it('should return 403 if not authorized to update', async () => {
       req.params.id = 'blog1';
       req.body = { title: 'Updated' };
       req.user = { id: 'user123', role: 'user' };
@@ -293,7 +293,7 @@ describe('Blogs Controller', () => {
 
       await updateBlog(req, res, next);
 
-      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.status).toHaveBeenCalledWith(403);
       expect(res.json).toHaveBeenCalledWith({
         success: false,
         message: 'Not authorized to update this blog'
@@ -304,34 +304,39 @@ describe('Blogs Controller', () => {
       req.params.id = 'blog1';
       req.body = { title: 'Updated Title' };
       req.user = { id: 'user123' };
+      const updatedBlog = { _id: 'blog1', author: 'user123', title: 'Updated Title', content: 'Content', edited: true };
       const mockBlog = {
         _id: 'blog1',
         author: 'user123',
         title: 'Original',
-        content: 'Content'
+        content: 'Content',
+        save: jest.fn().mockResolvedValue(undefined),
+        populate: jest.fn().mockResolvedValue(updatedBlog)
       };
-      const mockQuery = { populate: jest.fn().mockResolvedValue({...mockBlog, title: 'Updated Title', edited: true, editedAt: Date.now()}) };
       Blog.findById.mockResolvedValueOnce(mockBlog);
-      Blog.findByIdAndUpdate.mockReturnValue(mockQuery);
 
       await updateBlog(req, res, next);
 
-      expect(Blog.findByIdAndUpdate).toHaveBeenCalledWith(
-        'blog1',
-        expect.objectContaining({ $set: expect.objectContaining({ title: 'Updated Title' }) }),
-        expect.objectContaining({ new: true, runValidators: true })
-      );
+      expect(mockBlog.save).toHaveBeenCalled();
+      expect(mockBlog.populate).toHaveBeenCalledWith('author', 'name');
       expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ success: true, data: updatedBlog });
     });
 
     it('should allow admin to update blog', async () => {
       req.params.id = 'blog1';
       req.body = { title: 'Updated' };
       req.user = { id: 'user456', role: 'admin' };
-      const mockBlog = { _id: 'blog1', author: 'user123', title: 'Original' };
-      const mockQuery = { populate: jest.fn().mockResolvedValue({...mockBlog, title: 'Updated', edited: true}) };
+      const updatedBlog = { _id: 'blog1', author: 'user123', title: 'Updated', content: 'Content', edited: true };
+      const mockBlog = {
+        _id: 'blog1',
+        author: 'user123',
+        title: 'Original',
+        content: 'Content',
+        save: jest.fn().mockResolvedValue(undefined),
+        populate: jest.fn().mockResolvedValue(updatedBlog)
+      };
       Blog.findById.mockResolvedValueOnce(mockBlog);
-      Blog.findByIdAndUpdate.mockReturnValue(mockQuery);
 
       await updateBlog(req, res, next);
 
@@ -342,7 +347,7 @@ describe('Blogs Controller', () => {
       req.params.id = 'blog1';
       req.body = { title: 'a'.repeat(51) };
       req.user = { id: 'user123' };
-      const mockBlog = { _id: 'blog1', author: 'user123' };
+      const mockBlog = { _id: 'blog1', author: 'user123', content: 'Valid content' };
       Blog.findById.mockResolvedValue(mockBlog);
 
       await updateBlog(req, res, next);
@@ -358,7 +363,7 @@ describe('Blogs Controller', () => {
       req.params.id = 'blog1';
       req.body = { content: 'a'.repeat(51) };
       req.user = { id: 'user123' };
-      const mockBlog = { _id: 'blog1', author: 'user123' };
+      const mockBlog = { _id: 'blog1', author: 'user123', title: 'Valid title' };
       Blog.findById.mockResolvedValue(mockBlog);
 
       await updateBlog(req, res, next);
@@ -370,11 +375,11 @@ describe('Blogs Controller', () => {
       });
     });
 
-    it('should return 400 if neither title nor content provided', async () => {
+    it('should return 400 if title becomes empty after trim', async () => {
       req.params.id = 'blog1';
-      req.body = {};
+      req.body = { title: '   ' };
       req.user = { id: 'user123' };
-      const mockBlog = { _id: 'blog1', author: 'user123' };
+      const mockBlog = { _id: 'blog1', author: 'user123', title: 'Original', content: 'Content' };
       Blog.findById.mockResolvedValue(mockBlog);
 
       await updateBlog(req, res, next);
@@ -382,21 +387,58 @@ describe('Blogs Controller', () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
         success: false,
-        message: 'Please provide title or content to update'
+        message: 'Title cannot be empty'
       });
+    });
+
+    it('should return 400 if content becomes empty after trim', async () => {
+      req.params.id = 'blog1';
+      req.body = { content: '   ' };
+      req.user = { id: 'user123' };
+      const mockBlog = { _id: 'blog1', author: 'user123', title: 'Valid title', content: 'Old content' };
+      Blog.findById.mockResolvedValue(mockBlog);
+
+      await updateBlog(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: 'Content cannot be empty'
+      });
+    });
+
+    it('should return 200 without saving if no changes', async () => {
+      req.params.id = 'blog1';
+      req.body = {};
+      req.user = { id: 'user123' };
+      const mockBlog = { _id: 'blog1', author: 'user123', title: 'Original', content: 'Content', save: jest.fn() };
+      Blog.findById.mockResolvedValue(mockBlog);
+
+      await updateBlog(req, res, next);
+
+      expect(mockBlog.save).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ success: true, data: mockBlog });
     });
 
     it('should allow updating both title and content', async () => {
       req.params.id = 'blog1';
       req.body = { title: 'New Title', content: 'New Content' };
       req.user = { id: 'user123' };
-      const mockBlog = { _id: 'blog1', author: 'user123' };
-      const mockQuery = { populate: jest.fn().mockResolvedValue({...mockBlog, title: 'New Title', content: 'New Content', edited: true}) };
+      const updatedBlog = { _id: 'blog1', author: 'user123', title: 'New Title', content: 'New Content', edited: true };
+      const mockBlog = {
+        _id: 'blog1',
+        author: 'user123',
+        title: 'Old Title',
+        content: 'Old Content',
+        save: jest.fn().mockResolvedValue(undefined),
+        populate: jest.fn().mockResolvedValue(updatedBlog)
+      };
       Blog.findById.mockResolvedValueOnce(mockBlog);
-      Blog.findByIdAndUpdate.mockReturnValue(mockQuery);
 
       await updateBlog(req, res, next);
 
+      expect(mockBlog.save).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(200);
     });
 
@@ -412,6 +454,38 @@ describe('Blogs Controller', () => {
       expect(res.json).toHaveBeenCalledWith({
         success: false,
         message: 'DB error'
+      });
+    });
+
+    it('should return 400 if blog has no title and none is provided', async () => {
+      req.params.id = 'blog1';
+      req.body = {};
+      req.user = { id: 'user123' };
+      const mockBlog = { _id: 'blog1', author: 'user123' };
+      Blog.findById.mockResolvedValue(mockBlog);
+
+      await updateBlog(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: 'Title cannot be empty'
+      });
+    });
+
+    it('should return 400 if blog has no content and none is provided', async () => {
+      req.params.id = 'blog1';
+      req.body = { title: 'Valid Title' };
+      req.user = { id: 'user123' };
+      const mockBlog = { _id: 'blog1', author: 'user123' };
+      Blog.findById.mockResolvedValue(mockBlog);
+
+      await updateBlog(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: 'Content cannot be empty'
       });
     });
   });
@@ -430,7 +504,7 @@ describe('Blogs Controller', () => {
       });
     });
 
-    it('should return 401 if not authorized to delete', async () => {
+    it('should return 403 if not authorized to delete', async () => {
       req.params.id = 'blog1';
       req.user = { id: 'user123', role: 'user' };
       const mockBlog = { _id: 'blog1', author: 'user456' };
@@ -438,7 +512,7 @@ describe('Blogs Controller', () => {
 
       await deleteBlog(req, res, next);
 
-      expect(res.status).toHaveBeenCalledWith(401);
+      expect(res.status).toHaveBeenCalledWith(403);
       expect(res.json).toHaveBeenCalledWith({
         success: false,
         message: 'Not authorized to delete this blog'
