@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const BlogSchema = new mongoose.Schema({
     title: { type: String, required: [true, 'Please add a title'], trim: true, minlength: [1, 'Please add a title'], maxlength: [50, 'Title can not be more than 50 characters'] },
-    content: { type: String, trim: true, maxlength: [250, 'Body can not be more than 50 characters'] }, // Note: You may want to update the error message to '250 characters'
+    content: { type: String, trim: true, maxlength: [50, 'Body can not be more than 50 characters'] }, 
     
     // Relationships
     author: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },

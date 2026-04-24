@@ -67,27 +67,32 @@ exports.getBlog = async (req, res, next) => {
 };
 
 exports.addBlog = async (req, res, next) => {
-  try {
-
+ try {
     req.body.author = req.user.id;
 
-    if(typeof req.body.title === "undefined" 
-      || typeof req.body.content === "undefined")return res.status(400).json(
-        {
-          success: false, 
-          message: "Please enter Title and Content"
-        });
-    if(req.body.title.toString().length > 50)return res.status(400).json(
-        {
-          success: false, 
-          message: "Character limit exceeded at title"
-        });
-    if(req.body.content.toString().length > 50)return res.status(400).json(
-        {
-          success: false, 
-          message: "Character limit exceeded at content"
-        });
-    let blog = await Blog.create(req.body);
+    // Trim inputs before validation
+    const trimmedTitle   = (req.body.title ?? '').toString().trim();
+    const trimmedContent = (req.body.content ?? '').toString().trim();
+
+    if(!trimmedTitle) {
+      return res.status(400).json({ success: false, message: 'Title cannot be empty' });
+    }
+
+    if(!trimmedContent) {
+      return res.status(400).json({ success: false, message: 'Content cannot be empty' });
+    }
+
+    if (trimmedTitle.length > 50) {
+      return res.status(400).json({ success: false, message: 'Character limit exceeded at title' });
+    }
+    if (trimmedContent.length > 50) {
+      return res.status(400).json({ success: false, message: 'Character limit exceeded at content' });
+    }
+
+    req.body.title   = trimmedTitle;
+    req.body.content = trimmedContent;
+
+    const blog = await Blog.create(req.body);
     return res.status(201).json({ success: true, data: blog });
   } catch (err) {
     console.log(err);
@@ -138,7 +143,6 @@ exports.updateBlog = async (req, res, next) => {
     blog.editedAt = Date.now();
     await blog.save();
     blog = await blog.populate('author', 'name');
-
 
     return res.status(200).json({ success: true, data: blog });
   } catch (err) {

@@ -3717,8 +3717,8 @@
                   "pm.test('Missing title rejected (400)', function () {",
                   "    pm.response.to.have.status(400);",
                   "});",
-                  "pm.test('Error message about title and content', function () {",
-                  "    pm.expect(pm.response.json().message).to.include('Title and Content');",
+                  "pm.test('Error message about title', function () {",
+                  "    pm.expect(pm.response.json().message).to.include('Title');",
                   "});",
                   "pm.execution.setNextRequest('Blog: Create Blog Missing Content');"
                 ],
@@ -3774,8 +3774,8 @@
                   "pm.test('Missing content rejected (400)', function () {",
                   "    pm.response.to.have.status(400);",
                   "});",
-                  "pm.test('Error message about title and content', function () {",
-                  "    pm.expect(pm.response.json().message).to.include('Title and Content');",
+                  "pm.test('Error message about content', function () {",
+                  "    pm.expect(pm.response.json().message).to.include('Content');",
                   "});",
                   "pm.execution.setNextRequest('Blog: Create Blog Title Over 50 Chars');"
                 ],
