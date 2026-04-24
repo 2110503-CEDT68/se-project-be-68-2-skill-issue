@@ -103,6 +103,24 @@ exports.addReview = async (req, res, next) => {
       return res.status(404).json({ success: false, message: `No company with the id of ${req.params.id}` });
     }
 
+    // Validate rating
+    const rating = Number(req.body.rating);
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      return res.status(400).json({ success: false, message: 'Rating must be an integer between 1 and 5' });
+    }
+
+    // Trim and validate comment
+    const trimmedComment = (req.body.comment ?? '').toString().trim();
+    if (!trimmedComment) {
+      return res.status(400).json({ success: false, message: 'Comment is required' });
+    }
+    if (trimmedComment.length > 100) {
+      return res.status(400).json({ success: false, message: 'Comment cannot exceed 100 characters' });
+    }
+
+    req.body.rating  = rating;
+    req.body.comment = trimmedComment;
+
     const review = await Review.create(req.body);
     res.status(201).json({ success: true, data: review });
   } catch (err) {
@@ -146,10 +164,10 @@ exports.updateReview = async (req, res, next) => {
     if(!trimmed) {
       return res.status(400).json({ success: false, message: 'Comment is required' });
     }
-    // Comment validation 
 
-    if (trimmed.length > 500) {
-      return res.status(400).json({ success: false, message: 'Comment cannot exceed 500 characters' });
+    // Comment validation 
+    if (trimmed.length > 100) {
+      return res.status(400).json({ success: false, message: 'Comment cannot exceed 100 characters' });
     }
 
     // No-op check — return early if nothing changed

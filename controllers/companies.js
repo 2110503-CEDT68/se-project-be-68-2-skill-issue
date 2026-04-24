@@ -86,6 +86,12 @@ exports.getCompany = async (req, res, next) => {
  */
 exports.createCompany = async (req, res, next) => {
   try {
+    if (typeof req.body.name        === 'string') req.body.name        = req.body.name.trim();
+    if (typeof req.body.address     === 'string') req.body.address     = req.body.address.trim();
+    if (typeof req.body.website     === 'string') req.body.website     = req.body.website.trim();
+    if (typeof req.body.description === 'string') req.body.description = req.body.description.trim();
+    if (typeof req.body.telephone_number === 'string') req.body.telephone_number = req.body.telephone_number.trim();
+    
     const company = await Company.create(req.body);
     res.status(201).json({ success: true, data: company });
   } catch (err) {
@@ -101,6 +107,12 @@ exports.createCompany = async (req, res, next) => {
  */
 exports.updateCompany = async (req, res, next) => {
   try {
+    if (typeof req.body.name        === 'string') req.body.name        = req.body.name.trim();
+    if (typeof req.body.address     === 'string') req.body.address     = req.body.address.trim();
+    if (typeof req.body.website     === 'string') req.body.website     = req.body.website.trim();
+    if (typeof req.body.description === 'string') req.body.description = req.body.description.trim();
+    if (typeof req.body.telephone_number === 'string') req.body.telephone_number = req.body.telephone_number.trim();
+
     const company = await Company.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true

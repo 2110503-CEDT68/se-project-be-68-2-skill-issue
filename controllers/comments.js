@@ -16,6 +16,9 @@ exports.addComment = async (req, res, next) => {
 
     req.body.blog = req.params.id;
     req.body.author = req.user.id;
+
+    const trimmedText = (req.body.text ?? '').toString().trim();
+
     if(typeof req.body.blog === "undefined" 
       || typeof req.body.author === "undefined")return res.status(400).json(
         {
@@ -23,18 +26,20 @@ exports.addComment = async (req, res, next) => {
           message: "Please enter Blog and Author"
         });
 
-    if(typeof req.body.text === "undefined" )
+    if(!trimmedText)
       return res.status(400).json(
         {
           success: false, 
           message: "Please enter text"
         });
-    if(req.body.text.toString().length>100)return res.status(400).json(
+    if(trimmedText.length > 100)
+      return res.status(400).json(
         {
           success: false, 
           message: "Character limit exceeded"
-        }
-      );
+        });
+
+    req.body.text = trimmedText;
       
     let comment = await Comment.create(req.body);
     return res.status(201).json({ success: true, data: comment });
