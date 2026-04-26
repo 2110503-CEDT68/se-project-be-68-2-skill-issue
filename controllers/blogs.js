@@ -1,5 +1,6 @@
 
 const Blog = require('../models/Blog.js');
+const User = require('../models/User.js');
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 25;
@@ -18,9 +19,15 @@ exports.getBlogs = async (req, res, next) => {
 
     if (searchTerm) {
       const escapedSearchTerm = escapeRegex(searchTerm);
+      const matchingUsers = await User.find(
+        { name: { $regex: escapedSearchTerm, $options: 'i' } },
+        '_id'
+      );
+      const authorIds = matchingUsers.map((u) => u._id);
       filters.$or = [
         { title: { $regex: escapedSearchTerm, $options: 'i' } },
-        { content: { $regex: escapedSearchTerm, $options: 'i' } }
+        { content: { $regex: escapedSearchTerm, $options: 'i' } },
+        { author: { $in: authorIds } }
       ];
     }
 
