@@ -1,6 +1,8 @@
 jest.mock('../../models/Blog');
+jest.mock('../../models/User');
 
 const Blog = require('../../models/Blog');
+const User = require('../../models/User');
 const { getBlogs, getBlog, addBlog, updateBlog, deleteBlog } = require('../../controllers/blogs');
 
 describe('Blogs Controller', () => {
@@ -20,6 +22,7 @@ describe('Blogs Controller', () => {
     next = jest.fn();
     jest.clearAllMocks();
     Blog.countDocuments = jest.fn();
+    User.find = jest.fn();
   });
 
   describe('getBlogs', () => {
@@ -70,10 +73,12 @@ describe('Blogs Controller', () => {
       const expectedFilter = {
         $or: [
           { title: { $regex: 'React', $options: 'i' } },
-          { content: { $regex: 'React', $options: 'i' } }
+          { content: { $regex: 'React', $options: 'i' } },
+          { author: { $in: [] } }
         ]
       };
 
+      User.find.mockResolvedValue([]);
       Blog.find.mockReturnValue(mockQuery);
       Blog.countDocuments.mockResolvedValue(3);
 
@@ -112,10 +117,12 @@ describe('Blogs Controller', () => {
       const expectedFilter = {
         $or: [
           { title: { $regex: 'React\\?', $options: 'i' } },
-          { content: { $regex: 'React\\?', $options: 'i' } }
+          { content: { $regex: 'React\\?', $options: 'i' } },
+          { author: { $in: [] } }
         ]
       };
 
+      User.find.mockResolvedValue([]);
       Blog.find.mockReturnValue(mockQuery);
       Blog.countDocuments.mockResolvedValue(0);
 
@@ -151,6 +158,44 @@ describe('Blogs Controller', () => {
 
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({ success: false, message: 'DB error' });
+    });
+
+    it('should search blogs by author name', async () => {
+      req.query = { search: 'John' };
+
+      const mockUser = { _id: 'user1' };
+      User.find.mockResolvedValue([mockUser]);
+
+      const mockBlogs = [{ _id: 'b1', title: 'Blog by John' }];
+      const mockQuery = {
+        populate: jest.fn().mockReturnThis(),
+        sort: jest.fn().mockReturnThis(),
+        skip: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockResolvedValue(mockBlogs)
+      };
+      Blog.find.mockReturnValue(mockQuery);
+      Blog.countDocuments.mockResolvedValue(1);
+
+      await getBlogs(req, res, next);
+
+      expect(User.find).toHaveBeenCalledWith(
+        { name: { $regex: 'John', $options: 'i' } },
+        '_id'
+      );
+      expect(Blog.find).toHaveBeenCalledWith({
+        $or: [
+          { title: { $regex: 'John', $options: 'i' } },
+          { content: { $regex: 'John', $options: 'i' } },
+          { author: { $in: ['user1'] } }
+        ]
+      });
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        count: 1,
+        pagination: { page: 1, limit: 25, total: 1, totalPages: 1 },
+        data: mockBlogs
+      });
     });
   });
 
